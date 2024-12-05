@@ -441,6 +441,13 @@ inline std::string default_log_filename()
 }
 
 /**
+ * @brief Returns the default log pattern for the global logger.
+ *
+ * @return std::string The default log pattern.
+ */
+inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
+
+/**
  * @brief Get the default logger.
  *
  * @return logger& The default logger

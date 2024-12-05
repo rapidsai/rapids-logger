@@ -113,7 +113,7 @@ private:
 class logger_impl {
  public:
   logger_impl(std::string name) : underlying{spdlog::logger{name}} {
-    underlying.set_pattern("[%6t][%H:%M:%S:%f][%-6l] %v");
+    underlying.set_pattern(default_pattern());
     auto const env_logging_level =
       std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEFAULT_LOGGING_LEVEL");
     if (env_logging_level != nullptr) { set_level(detail::string_to_level(env_logging_level)); }
