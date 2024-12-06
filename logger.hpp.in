@@ -424,6 +424,16 @@ class null_sink_mt : public sink {
   null_sink_mt();
 };
 
+typedef void (*log_callback_t)(int lvl, const char* msg);
+
+/**
+ * @brief A sink that executes a callback whenever a message is logged.
+ */
+class callback_sink_mt : public sink {
+public:
+    explicit callback_sink_mt(const log_callback_t &callback);
+};
+
 /**
  * @brief Returns the default log filename for the global logger.
  *
