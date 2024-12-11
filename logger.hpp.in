@@ -424,6 +424,16 @@ class null_sink_mt : public sink {
   null_sink_mt();
 };
 
+typedef void (*log_callback_t)(int lvl, const char* msg);
+
+/**
+ * @brief A sink that executes a callback whenever a message is logged.
+ */
+class callback_sink_mt : public sink {
+public:
+    explicit callback_sink_mt(const log_callback_t &callback);
+};
+
 /**
  * @brief Returns the default log filename for the global logger.
  *
@@ -439,6 +449,13 @@ inline std::string default_log_filename()
   // stderr sink)? I think the latter is better.
   return (filename == nullptr) ? std::string{"@_RAPIDS_LOGGER_NAMESPACE@_log.txt"} : std::string{filename};
 }
+
+/**
+ * @brief Returns the default log pattern for the global logger.
+ *
+ * @return std::string The default log pattern.
+ */
+inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
 
 /**
  * @brief Get the default logger.
