@@ -142,7 +142,7 @@ function(rapids_make_logger logger_namespace)
   target_include_directories(
     ${_RAPIDS_LOGGER_TARGET}
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>"
-              "$<INSTALL_INTERFACE:${_RAPIDS_LOGGER_HEADER_DIR}>")
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_features(${_RAPIDS_LOGGER_TARGET} INTERFACE cxx_std_17)
 
   # Create an interface target that will trigger compilation of the logger implementation in any
