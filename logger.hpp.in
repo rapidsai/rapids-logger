@@ -425,13 +425,14 @@ class null_sink_mt : public sink {
 };
 
 typedef void (*log_callback_t)(int lvl, const char* msg);
+typedef void (*flush_callback_t)();
 
 /**
  * @brief A sink that executes a callback whenever a message is logged.
  */
 class callback_sink_mt : public sink {
 public:
-    explicit callback_sink_mt(const log_callback_t &callback);
+    explicit callback_sink_mt(const log_callback_t &callback, const flush_callback_t &flush = nullptr);
 };
 
 /**

@@ -154,7 +154,7 @@ template <class Mutex>
 class callback_sink : public spdlog::sinks::base_sink<Mutex> {
  public:
   explicit callback_sink(log_callback_t callback,
-                         void (*flush)()         = nullptr)
+                         flush_callback_t flush         = nullptr)
     : _callback{callback}, _flush{flush ? flush : default_flush} {}
 
  protected:
@@ -211,8 +211,8 @@ ostream_sink_mt::ostream_sink_mt(std::ostream& stream, bool force_flush)
 null_sink_mt::null_sink_mt()
   : sink{std::make_unique<detail::sink_impl>(std::make_shared<spdlog::sinks::null_sink_mt>())} {}
 
-callback_sink_mt::callback_sink_mt(const log_callback_t &callback)
-  : sink{std::make_unique<detail::sink_impl>(std::make_shared<detail::callback_sink<std::mutex>>(callback))} {}
+callback_sink_mt::callback_sink_mt(const log_callback_t &callback, const flush_callback_t &flush)
+  : sink{std::make_unique<detail::sink_impl>(std::make_shared<detail::callback_sink<std::mutex>>(callback, flush))} {}
 
 // Logger methods
 logger::logger(std::string name, std::string filename)
