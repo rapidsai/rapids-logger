@@ -481,6 +481,24 @@ inline logger& default_logger()
   return logger_;
 }
 
+/**
+ * @brief An object used for scoped log level setting
+ *
+ * Instances will set the logging to the level indicated on construction and
+ * will revert to the previous set level on destruction.
+ */
+struct log_level_setter {
+  explicit log_level_setter(level_enum level)
+  {
+    prev_level_ = default_logger().level();
+    default_logger().set_level(level);
+  }
+  ~log_level_setter() { default_logger().set_level(prev_level_); }
+
+ private:
+  level_enum prev_level_;
+};
+
 // Macros for easier logging, similar to spdlog.
 #if !defined(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL)
 #define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO
