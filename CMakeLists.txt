@@ -48,6 +48,7 @@ Generate a logger implementation customized for the specified namespace.
     [LOGGER_TARGET <logger-target-name>]
     [LOGGER_HEADER_DIR <header-dir>]
     [LOGGER_MACRO_PREFIX <macro-prefix>]
+    [CMAKE_ALIAS_NAMESPACE <alias-namespace>]
   )
 
 This function produces an interface target named <logger-target-name> that, when linked to by other targets, provides them a header file that defines a logger interface for the specified namespace. The logger is generated from the provided template files and is configured to use the specified namespace and macro prefix. The generated logger is placed in the specified header directory.
@@ -69,6 +70,9 @@ The logger implementation lives in a separate header file that is not included i
 
 ``LOGGER_MACRO_PREFIX``
   The prefix to use for the logger macros. If not specified, the macro prefix is the uppercase version of the logger namespace.
+
+``CMAKE_ALIAS_NAMESPACE``
+  The namespace to use for the CMake alias target. If not specified, the alias namespace is the same as the logger namespace.
 
 Result Targets
 ^^^^^^^^^^^^^^^^
@@ -115,6 +119,9 @@ function(rapids_make_logger logger_namespace)
   if(NOT _RAPIDS_LOGGER_MACRO_PREFIX)
     string(TOUPPER ${logger_namespace} _RAPIDS_LOGGER_MACRO_PREFIX)
   endif()
+  if(NOT _RAPIDS_CMAKE_NAMESPACE_ALIAS)
+    set(_RAPIDS_CMAKE_NAMESPACE_ALIAS ${logger_namespace})
+  endif()
 
   # All paths are computed relative to the current source/binary dir of the file from which the
   # function is invoked. As a result we cannot use relative paths here because CMake will root these
@@ -132,6 +139,7 @@ function(rapids_make_logger logger_namespace)
   install(FILES ${LOGGER_IMPL_OUTPUT_FILE} DESTINATION ${INSTALL_DIR}/logger_impl)
 
   add_library(${_RAPIDS_LOGGER_TARGET} INTERFACE)
+  add_library(${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${_RAPIDS_LOGGER_TARGET} ALIAS ${_RAPIDS_LOGGER_TARGET})
   include(GNUInstallDirs)
   # Note: The BUILD_INTERFACE setting assumes that LOGGER_HEADER_DIR is the subdirectory of
   # CMAKE_INSTALL_INCLUDEDIR relative to which all includes are rooted in the C++ code files. I
@@ -156,6 +164,7 @@ function(rapids_make_logger logger_namespace)
   # https://cmake.org/cmake/help/latest/command/add_library.html#interface-with-sources
   set(impl_target ${_RAPIDS_LOGGER_TARGET}_impl)
   add_library(${impl_target} INTERFACE)
+  add_library(${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${impl_target} ALIAS ${impl_target})
   target_sources(
     ${impl_target}
     INTERFACE $<BUILD_INTERFACE:${LOGGER_IMPL_SRC_OUTPUT_FILE}>

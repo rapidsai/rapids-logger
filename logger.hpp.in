@@ -424,6 +424,17 @@ class null_sink_mt : public sink {
   null_sink_mt();
 };
 
+typedef void (*log_callback_t)(int lvl, const char* msg);
+typedef void (*flush_callback_t)();
+
+/**
+ * @brief A sink that executes a callback whenever a message is logged.
+ */
+class callback_sink_mt : public sink {
+public:
+    explicit callback_sink_mt(const log_callback_t &callback, const flush_callback_t &flush = nullptr);
+};
+
 /**
  * @brief Returns the default log filename for the global logger.
  *
@@ -439,6 +450,13 @@ inline std::string default_log_filename()
   // stderr sink)? I think the latter is better.
   return (filename == nullptr) ? std::string{"@_RAPIDS_LOGGER_NAMESPACE@_log.txt"} : std::string{filename};
 }
+
+/**
+ * @brief Returns the default log pattern for the global logger.
+ *
+ * @return std::string The default log pattern.
+ */
+inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
 
 /**
  * @brief Get the default logger.
@@ -462,6 +480,24 @@ inline logger& default_logger()
   }();
   return logger_;
 }
+
+/**
+ * @brief An object used for scoped log level setting
+ *
+ * Instances will set the logging to the level indicated on construction and
+ * will revert to the previous set level on destruction.
+ */
+struct log_level_setter {
+  explicit log_level_setter(level_enum level)
+  {
+    prev_level_ = default_logger().level();
+    default_logger().set_level(level);
+  }
+  ~log_level_setter() { default_logger().set_level(prev_level_); }
+
+ private:
+  level_enum prev_level_;
+};
 
 // Macros for easier logging, similar to spdlog.
 #if !defined(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL)
