@@ -119,6 +119,9 @@ function(rapids_make_logger logger_namespace)
   if(NOT _RAPIDS_LOGGER_MACRO_PREFIX)
     string(TOUPPER ${logger_namespace} _RAPIDS_LOGGER_MACRO_PREFIX)
   endif()
+  if(NOT _RAPIDS_CMAKE_NAMESPACE_ALIAS)
+    set(_RAPIDS_CMAKE_NAMESPACE_ALIAS ${logger_namespace})
+  endif()
 
   # All paths are computed relative to the current source/binary dir of the file from which the
   # function is invoked. As a result we cannot use relative paths here because CMake will root these
@@ -136,7 +139,9 @@ function(rapids_make_logger logger_namespace)
   install(FILES ${LOGGER_IMPL_OUTPUT_FILE} DESTINATION ${INSTALL_DIR}/logger_impl)
 
   add_library(${_RAPIDS_LOGGER_TARGET} INTERFACE)
+  message("Created target ${_RAPIDS_LOGGER_TARGET}")
   add_library(${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${_RAPIDS_LOGGER_TARGET} ALIAS ${_RAPIDS_LOGGER_TARGET})
+  message("Created target ${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${_RAPIDS_LOGGER_TARGET}")
   include(GNUInstallDirs)
   # Note: The BUILD_INTERFACE setting assumes that LOGGER_HEADER_DIR is the subdirectory of
   # CMAKE_INSTALL_INCLUDEDIR relative to which all includes are rooted in the C++ code files. I
@@ -161,7 +166,9 @@ function(rapids_make_logger logger_namespace)
   # https://cmake.org/cmake/help/latest/command/add_library.html#interface-with-sources
   set(impl_target ${_RAPIDS_LOGGER_TARGET}_impl)
   add_library(${impl_target} INTERFACE)
+  message("Created target ${impl_target}")
   add_library(${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${impl_target} ALIAS ${impl_target})
+  message("Created target ${_RAPIDS_CMAKE_NAMESPACE_ALIAS}::${impl_target}")
   target_sources(
     ${impl_target}
     INTERFACE $<BUILD_INTERFACE:${LOGGER_IMPL_SRC_OUTPUT_FILE}>
