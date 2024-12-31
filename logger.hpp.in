@@ -428,7 +428,7 @@ class null_sink_mt : public sink {
  *
  * See spdlog::sinks::stderr_sink_mt for more information.
  */
-class stderr_sink_mt : public stderr_sink_mt {
+class stderr_sink_mt : public sink {
  public:
   stderr_sink_mt();
 };
