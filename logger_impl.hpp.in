@@ -32,12 +32,13 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
 
+#include <spdlog/details/log_msg.h>
+#include <spdlog/sinks/base_sink.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/null_sink.h>
 #include <spdlog/sinks/ostream_sink.h>
+#include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/details/log_msg.h>
-#include <spdlog/sinks/base_sink.h>
 #pragma GCC diagnostic pop
 
 #include <iostream>
@@ -210,6 +211,9 @@ ostream_sink_mt::ostream_sink_mt(std::ostream& stream, bool force_flush)
 
 null_sink_mt::null_sink_mt()
   : sink{std::make_unique<detail::sink_impl>(std::make_shared<spdlog::sinks::null_sink_mt>())} {}
+
+stderr_sink_mt::stderr_sink_mt()
+  : sink{std::make_unique<detail::sink_impl>(std::make_shared<spdlog::sinks::stderr_sink_mt>())} {}
 
 callback_sink_mt::callback_sink_mt(const log_callback_t &callback, const flush_callback_t &flush)
   : sink{std::make_unique<detail::sink_impl>(std::make_shared<detail::callback_sink<std::mutex>>(callback, flush))} {}

@@ -424,6 +424,16 @@ class null_sink_mt : public sink {
   null_sink_mt();
 };
 
+/**
+ * @brief A sink that writes to stderr.
+ *
+ * See spdlog::sinks::stderr_sink_mt for more information.
+ */
+class stderr_sink_mt : public stderr_sink_mt {
+ public:
+  stderr_sink_mt();
+};
+
 typedef void (*log_callback_t)(int lvl, const char* msg);
 typedef void (*flush_callback_t)();
 
