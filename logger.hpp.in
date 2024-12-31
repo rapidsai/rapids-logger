@@ -455,7 +455,7 @@ public:
 inline sink_ptr default_sink()
 {
   auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
-  return (filename == nullptr) ? std::make_shared<stderr_sink_mt>() : std::make_shared<basic_file_sink_mt>(filename, true);
+  return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) : static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
 }
 
 /**
