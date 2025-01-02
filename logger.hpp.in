@@ -442,11 +442,11 @@ inline logger& default_logger()
     logger logger_ {
       "@_RAPIDS_LOGGER_MACRO_PREFIX@", default_log_filename()
     };
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO
+#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
 #ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
-    logger_.info("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG BEGIN [PTDS ENABLED] -----");
+    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
 #else
-    logger_.info("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG BEGIN [PTDS DISABLED] -----");
+    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
 #endif
 #endif
     return logger_;
