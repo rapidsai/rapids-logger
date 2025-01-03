@@ -41,11 +41,12 @@ Generate a logger implementation customized for the specified namespace.
 
 .. code-block:: cmake
 
-  rapids_make_logger(<logger_namespace> <logger_default_level>
+  rapids_make_logger(<logger_namespace>
     [EXPORT_SET <export-set-name>]
     [LOGGER_TARGET <logger-target-name>]
     [LOGGER_HEADER_DIR <header-dir>]
     [LOGGER_MACRO_PREFIX <macro-prefix>]
+    [LOGGER_DEFAULT_LEVEL <logger-default-level>]
     [CMAKE_ALIAS_NAMESPACE <alias-namespace>]
   )
 
@@ -56,9 +57,6 @@ The logger implementation lives in a separate header file that is not included i
 
 ``logger_namespace``
   The namespace for which to generate the logger implementation.
-
-``logger_default_level``
-  The default level used by the logger at runtime.
 
 ``EXPORT_SET``
   The name of the export set to which the logger target should be added. If not specified, the logger target is not added to any export set.
@@ -71,6 +69,9 @@ The logger implementation lives in a separate header file that is not included i
 
 ``LOGGER_MACRO_PREFIX``
   The prefix to use for the logger macros. If not specified, the macro prefix is the uppercase version of the logger namespace.
+
+``LOGGER_DEFAULT_LEVEL``
+  The default level used by the logger at runtime.
 
 ``CMAKE_ALIAS_NAMESPACE``
   The namespace to use for the CMake alias target. If not specified, the alias namespace is the same as the logger namespace.
@@ -91,23 +92,23 @@ Example on how to use :cmake:command:`rapids_make_logger`.
 
   # Generate a logger for the namespace "rapids" with default level INFO and
   # associate it with the export set "rapids-exports".
-  rapids_make_logger(rapids INFO
+  rapids_make_logger(rapids
     EXPORT_SET rapids-exports
+    LOGGER_DEFAULT_LEVEL INFO
   )
 
 #]=======================================================================]
-function(rapids_make_logger logger_namespace logger_default_level)
+function(rapids_make_logger logger_namespace)
   list(APPEND CMAKE_MESSAGE_CONTEXT "rapids_make_logger")
 
   set(_rapids_options)
-  set(_rapids_one_value EXPORT_SET LOGGER_TARGET LOGGER_HEADER_DIR LOGGER_MACRO_PREFIX)
+  set(_rapids_one_value EXPORT_SET LOGGER_TARGET LOGGER_HEADER_DIR LOGGER_MACRO_PREFIX LOGGER_DEFAULT_LEVEL)
   set(_rapids_multi_value)
   cmake_parse_arguments(_RAPIDS "${_rapids_options}" "${_rapids_one_value}"
                         "${_rapids_multi_value}" ${ARGN})
 
   # Most arguments are optional and can be inferred from the namespace by default.
   set(_RAPIDS_LOGGER_NAMESPACE ${logger_namespace})
-  set(_RAPIDS_LOGGER_DEFAULT_LEVEL ${logger_default_level})
   if(NOT _RAPIDS_LOGGER_TARGET)
     set(_RAPIDS_LOGGER_TARGET "${logger_namespace}_logger")
   endif()
@@ -116,6 +117,9 @@ function(rapids_make_logger logger_namespace logger_default_level)
   endif()
   if(NOT _RAPIDS_LOGGER_MACRO_PREFIX)
     string(TOUPPER ${logger_namespace} _RAPIDS_LOGGER_MACRO_PREFIX)
+  endif()
+  if(NOT _RAPIDS_LOGGER_DEFAULT_LEVEL)
+    set(_RAPIDS_LOGGER_DEFAULT_LEVEL "INFO")
   endif()
   if(NOT _RAPIDS_CMAKE_NAMESPACE_ALIAS)
     set(_RAPIDS_CMAKE_NAMESPACE_ALIAS ${logger_namespace})
