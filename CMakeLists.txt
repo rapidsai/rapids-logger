@@ -41,7 +41,7 @@ Generate a logger implementation customized for the specified namespace.
 
 .. code-block:: cmake
 
-  rapids_make_logger(<logger_namespace>
+  rapids_make_logger(<logger_namespace> <logger_default_level>
     [EXPORT_SET <export-set-name>]
     [LOGGER_TARGET <logger-target-name>]
     [LOGGER_HEADER_DIR <header-dir>]
@@ -56,6 +56,9 @@ The logger implementation lives in a separate header file that is not included i
 
 ``logger_namespace``
   The namespace for which to generate the logger implementation.
+
+``logger_default_level``
+  The default level used by the logger at runtime.
 
 ``EXPORT_SET``
   The name of the export set to which the logger target should be added. If not specified, the logger target is not added to any export set.
@@ -86,18 +89,14 @@ Example on how to use :cmake:command:`rapids_make_logger`.
 
 .. code-block:: cmake
 
-  # Generate a logger for the namespace "rapids" and associate it with the
-  # export set "rapids-exports".
-  rapids_make_logger(rapids
+  # Generate a logger for the namespace "rapids" with default level INFO and
+  # associate it with the export set "rapids-exports".
+  rapids_make_logger(rapids INFO
     EXPORT_SET rapids-exports
   )
 
-  # Generate a logger for the namespace "rmm" that does not support logging.
-  rapids_make_logger(rapids)
-
-
 #]=======================================================================]
-function(rapids_make_logger logger_namespace)
+function(rapids_make_logger logger_namespace logger_default_level)
   list(APPEND CMAKE_MESSAGE_CONTEXT "rapids_make_logger")
 
   set(_rapids_options)
@@ -108,6 +107,7 @@ function(rapids_make_logger logger_namespace)
 
   # Most arguments are optional and can be inferred from the namespace by default.
   set(_RAPIDS_LOGGER_NAMESPACE ${logger_namespace})
+  set(_RAPIDS_LOGGER_DEFAULT_LEVEL ${logger_default_level})
   if(NOT _RAPIDS_LOGGER_TARGET)
     set(_RAPIDS_LOGGER_TARGET "${logger_namespace}_logger")
   endif()
