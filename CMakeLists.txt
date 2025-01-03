@@ -33,8 +33,6 @@ rapids_cmake_build_type(Release)
 
 rapids_cpm_init()
 
-include(get_spdlog.cmake)
-
 #[=======================================================================[.rst:
 rapids_make_logger
 ------------------
@@ -122,6 +120,27 @@ function(rapids_make_logger logger_namespace)
   if(NOT _RAPIDS_CMAKE_NAMESPACE_ALIAS)
     set(_RAPIDS_CMAKE_NAMESPACE_ALIAS ${logger_namespace})
   endif()
+
+  # Get spdlog
+  include(${rapids-cmake-dir}/cpm/spdlog.cmake)
+  rapids_cpm_spdlog(
+    # The conda package for fmt is hard-coded to assume that we use a preexisting fmt library. This
+    # is why we have always had a libfmt linkage despite choosing to specify the header-only version
+    # of fmt. We need a more robust way of modifying this to support fully self-contained build and
+    # usage even in environments where fmt and/or spdlog are already present. The crudest solution
+    # would be to modify the interface compile definitions and link libraries of the spdlog target,
+    # if necessary. For now I'm specifying EXTERNAL_FMT_HO here so that in environments where spdlog
+    # is cloned and built from source we wind up with the behavior that we expect, but we'll have to
+    # resolve this properly eventually.
+    FMT_OPTION "EXTERNAL_FMT_HO"
+    # TODO: For consistency with the rest of our CMake we would want these to be separately
+    # configurable, but in the ideal end state we probably want to wind up with a BYO spdlog setup
+    # so that you can build against even header-only libraries using rapids-logger without spdlog if
+    # you don't want to use the logging functionality (e.g. you don't need spdlog for building
+    # against rmm if aren't using the logger targets) so I'll leave this fixed here for now in
+    # anticipation of a long-term fix that removes these altogether.
+    INSTALL_EXPORT_SET ${_RAPIDS_EXPORT_SET}
+    BUILD_EXPORT_SET ${_RAPIDS_EXPORT_SET})
 
   # All paths are computed relative to the current source/binary dir of the file from which the
   # function is invoked. As a result we cannot use relative paths here because CMake will root these
