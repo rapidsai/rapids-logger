@@ -71,7 +71,7 @@ The logger implementation lives in a separate header file that is not included i
   The prefix to use for the logger macros. If not specified, the macro prefix is the uppercase version of the logger namespace.
 
 ``LOGGER_DEFAULT_LEVEL``
-  The default level used by the logger at runtime.
+  The default level used by the logger at runtime. If not specified, defaults to "INFO".
 
 ``CMAKE_ALIAS_NAMESPACE``
   The namespace to use for the CMake alias target. If not specified, the alias namespace is the same as the logger namespace.
