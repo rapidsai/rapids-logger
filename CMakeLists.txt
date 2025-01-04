@@ -94,7 +94,7 @@ Example on how to use :cmake:command:`rapids_make_logger`.
   # associate it with the export set "rapids-exports".
   rapids_make_logger(rapids
     EXPORT_SET rapids-exports
-    LOGGER_DEFAULT_LEVEL INFO
+    LOGGER_DEFAULT_LEVEL WARN
   )
 
 #]=======================================================================]
