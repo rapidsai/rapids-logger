@@ -476,6 +476,7 @@ inline logger& default_logger()
     logger logger_ {
       "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
     };
+    logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@);
 #if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
 #ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
     logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");

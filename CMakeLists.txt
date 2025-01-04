@@ -46,6 +46,7 @@ Generate a logger implementation customized for the specified namespace.
     [LOGGER_TARGET <logger-target-name>]
     [LOGGER_HEADER_DIR <header-dir>]
     [LOGGER_MACRO_PREFIX <macro-prefix>]
+    [LOGGER_DEFAULT_LEVEL <logger-default-level>]
     [CMAKE_ALIAS_NAMESPACE <alias-namespace>]
   )
 
@@ -69,6 +70,9 @@ The logger implementation lives in a separate header file that is not included i
 ``LOGGER_MACRO_PREFIX``
   The prefix to use for the logger macros. If not specified, the macro prefix is the uppercase version of the logger namespace.
 
+``LOGGER_DEFAULT_LEVEL``
+  The default level used by the logger at runtime. If not specified, defaults to "INFO".
+
 ``CMAKE_ALIAS_NAMESPACE``
   The namespace to use for the CMake alias target. If not specified, the alias namespace is the same as the logger namespace.
 
@@ -86,22 +90,19 @@ Example on how to use :cmake:command:`rapids_make_logger`.
 
 .. code-block:: cmake
 
-  # Generate a logger for the namespace "rapids" and associate it with the
-  # export set "rapids-exports".
+  # Generate a logger for the namespace "rapids" with default level WARN and
+  # associate it with the export set "rapids-exports".
   rapids_make_logger(rapids
     EXPORT_SET rapids-exports
+    LOGGER_DEFAULT_LEVEL WARN
   )
-
-  # Generate a logger for the namespace "rmm" that does not support logging.
-  rapids_make_logger(rapids)
-
 
 #]=======================================================================]
 function(rapids_make_logger logger_namespace)
   list(APPEND CMAKE_MESSAGE_CONTEXT "rapids_make_logger")
 
   set(_rapids_options)
-  set(_rapids_one_value EXPORT_SET LOGGER_TARGET LOGGER_HEADER_DIR LOGGER_MACRO_PREFIX)
+  set(_rapids_one_value EXPORT_SET LOGGER_TARGET LOGGER_HEADER_DIR LOGGER_MACRO_PREFIX LOGGER_DEFAULT_LEVEL)
   set(_rapids_multi_value)
   cmake_parse_arguments(_RAPIDS "${_rapids_options}" "${_rapids_one_value}"
                         "${_rapids_multi_value}" ${ARGN})
@@ -116,6 +117,9 @@ function(rapids_make_logger logger_namespace)
   endif()
   if(NOT _RAPIDS_LOGGER_MACRO_PREFIX)
     string(TOUPPER ${logger_namespace} _RAPIDS_LOGGER_MACRO_PREFIX)
+  endif()
+  if(NOT _RAPIDS_LOGGER_DEFAULT_LEVEL)
+    set(_RAPIDS_LOGGER_DEFAULT_LEVEL "INFO")
   endif()
   if(NOT _RAPIDS_CMAKE_NAMESPACE_ALIAS)
     set(_RAPIDS_CMAKE_NAMESPACE_ALIAS ${logger_namespace})
