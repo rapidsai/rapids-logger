@@ -90,7 +90,7 @@ Example on how to use :cmake:command:`rapids_make_logger`.
 
 .. code-block:: cmake
 
-  # Generate a logger for the namespace "rapids" with default level INFO and
+  # Generate a logger for the namespace "rapids" with default level WARN and
   # associate it with the export set "rapids-exports".
   rapids_make_logger(rapids
     EXPORT_SET rapids-exports
