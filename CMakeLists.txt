@@ -73,6 +73,9 @@ The logger implementation lives in a separate header file that is not included i
 ``CMAKE_ALIAS_NAMESPACE``
   The namespace to use for the CMake alias target. If not specified, the alias namespace is the same as the logger namespace.
 
+``HIDE_ALL_SPDLOG_SYMBOLS``
+  If set, the logger implementation will be compiled with the linker option `--exclude-libs,libspdlog` to hide all symbols from the spdlog library. This is useful when the logger is used in a shared library that is linked to by other shared libraries that also use spdlog. This option is not set by default.
+
 Result Targets
 ^^^^^^^^^^^^^^^^
   <logger-target-name> is an interface target that provides the logger interface for the specified namespace.
@@ -102,7 +105,7 @@ function(rapids_make_logger logger_namespace)
     message(FATAL_ERROR "spdlog::spdlog target not found. Please find spdlog before calling rapids_make_logger.")
   endif()
 
-  set(_rapids_options)
+  set(_rapids_options HIDE_ALL_SPDLOG_SYMBOLS)
   set(_rapids_one_value EXPORT_SET LOGGER_TARGET LOGGER_HEADER_DIR LOGGER_MACRO_PREFIX LOGGER_DEFAULT_LEVEL)
   set(_rapids_multi_value)
   cmake_parse_arguments(_RAPIDS "${_rapids_options}" "${_rapids_one_value}"
@@ -176,6 +179,9 @@ function(rapids_make_logger logger_namespace)
                                                  spdlog::spdlog)
   set_target_properties(${impl_target} PROPERTIES POSITION_INDEPENDENT_CODE ON
                                                   INTERFACE_POSITION_INDEPENDENT_CODE ON)
+  if(_RAPIDS_HIDE_ALL_SPDLOG_SYMBOLS)
+    target_link_options(${impl_target} INTERFACE "LINKER:--exclude-libs,libspdlog")
+  endif()
 
   set(_install_export)
   if(_RAPIDS_EXPORT_SET)
