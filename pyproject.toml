@@ -1,0 +1,8 @@
+# Copyright (c) 2025, NVIDIA CORPORATION.
+
+[tool.codespell]
+# note: pre-commit passes explicit lists of files here, which this skip file list doesn't override -
+# this is only to allow you to run codespell interactively
+skip = "./.git,./.github,./build"
+builtin = "clear"
+quiet-level = 3

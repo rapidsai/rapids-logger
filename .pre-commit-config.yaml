@@ -53,3 +53,9 @@ repos:
           (?x)^(
             ^cmake/spdlog_override.cmake
           )
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        additional_dependencies: [tomli]
+        args: ["--toml", "pyproject.toml"]
