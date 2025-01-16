@@ -37,29 +37,9 @@ rapids_cpm_init()
 option(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS "Build and link to spdlog in a way that maximizes all symbol hiding" ON)
 
 include(CMakeDependentOption)
-# If we are hiding all spdlog symbols then we need to use the bundled fmt library.
+# If we are hiding all spdlog symbols then we need to use the bundled fmt
+# library, so this option depends on what the above is set to.
 cmake_dependent_option(RAPIDS_LOGGER_FMT_OPTION "The fmt option to use when building spdlog." "EXTERNAL_FMT_HO" "NOT RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS" "BUNDLED")
-
-# Get spdlog
-if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
-  set(CPM_DOWNLOAD_spdlog ON)
-  #set(args "EXCLUDE_FROM_ALL ON OPTIONS \"BUILD_SHARED_LIBS OFF\" \"SPDLOG_BUILD_SHARED OFF\"")
-else()
-  message(FATAL_ERROR "RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS must be set to ON")
-endif()
-include(${rapids-cmake-dir}/cpm/spdlog.cmake)
-rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
-    # TODO: Figure out how to get rid of this. We should never install these
-    BUILD_EXPORT_SET rapids-logger-exports
-    INSTALL_EXPORT_SET rapids-logger-exports
-    # TODO: I don't really expect this to work with the way that
-    # rapids_cpm_spdlog is set up right now, it's going to require
-    # some tweaking of argument forwarding I suspect.
-    CPM_ARGS
-    EXCLUDE_FROM_ALL ON
-    OPTIONS "BUILD_SHARED_LIBS OFF"
-            "SPDLOG_BUILD_SHARED OFF"
- )
 
 add_library(
     rapids_logger
@@ -81,10 +61,31 @@ set_target_properties(
              POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
+# Get spdlog
+include(${rapids-cmake-dir}/cpm/spdlog.cmake)
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
+  set(CPM_DOWNLOAD_spdlog ON)
+  rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
+      CPM_ARGS
+      # TODO: EXCLUDE_FROM_ALL is not supported here because rapids-cmake
+      # overrides it. We need to find a way around that, ideally without
+      # writing an override.json file. If necessary we can add an option to
+      # rapids_cpm_spdlog, but this is a problem for all the rapids_cpm_*
+      # packages so ideally there would be some centralized handling of this.
+      # For now this line isn't actually doing anything, I'm using a patched
+      # version of rapids-cmake to make this "work".
+      EXCLUDE_FROM_ALL ON
+      OPTIONS "BUILD_SHARED_LIBS OFF"
+              "SPDLOG_BUILD_SHARED OFF"
+   )
    target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
+else()
+  rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
+      BUILD_EXPORT_SET rapids-logger-exports
+      INSTALL_EXPORT_SET rapids-logger-exports
+   )
 endif()
+target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
 
 rapids_cmake_install_lib_dir(lib_dir)
 install(
