@@ -21,16 +21,7 @@
 #include <string>
 #include <vector>
 
-namespace __attribute__((visibility("default"))) @_RAPIDS_LOGGER_NAMESPACE@ {
-
-// These values must be kept in sync with spdlog!
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_TRACE    0
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG    1
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO     2
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_WARN     3
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_ERROR    4
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_CRITICAL 5
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_OFF      6
+namespace __attribute__((visibility("default"))) rapids_logger {
 
 /**
  * @brief The log levels supported by the logger.
@@ -38,13 +29,13 @@ namespace __attribute__((visibility("default"))) @_RAPIDS_LOGGER_NAMESPACE@ {
  * These levels correspond to the levels defined by spdlog.
  */
 enum class level_enum : int32_t {
-  trace    = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_TRACE,
-  debug    = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG,
-  info     = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO,
-  warn     = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_WARN,
-  error    = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_ERROR,
-  critical = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_CRITICAL,
-  off      = @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_OFF,
+  trace    = 0,
+  debug    = 1,
+  info     = 2,
+  warn     = 3,
+  error    = 4,
+  critical = 5,
+  off      = 6,
   n_levels
 };
 
@@ -447,47 +438,47 @@ public:
 /**
  * @brief Returns the default log filename for the global logger.
  *
- * If the environment variable `@_RAPIDS_LOGGER_NAMESPACE@_DEBUG_LOG_FILE` is defined, its value is used as the path and
- * name of the log file. Otherwise, the file `@_RAPIDS_LOGGER_NAMESPACE@_log.txt` in the current working directory is used.
+ * If the environment variable `rapids_logger_DEBUG_LOG_FILE` is defined, its value is used as the path and
+ * name of the log file. Otherwise, the file `rapids_logger_log.txt` in the current working directory is used.
  *
  * @return std::string The default log file name.
  */
-inline sink_ptr default_sink()
-{
-  auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
-  return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) : static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
-}
-
+//inline sink_ptr default_sink()
+//{
+//  auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
+//  return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) : static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
+//}
+//
 /**
  * @brief Returns the default log pattern for the global logger.
  *
  * @return std::string The default log pattern.
  */
-inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
-
+//inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
+//
 /**
  * @brief Get the default logger.
  *
  * @return logger& The default logger
  */
-inline logger& default_logger()
-{
-  static logger logger_ = [] {
-    logger logger_ {
-      "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
-    };
-    logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@));
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
-#ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
-    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
-#else
-    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
-#endif
-#endif
-    return logger_;
-  }();
-  return logger_;
-}
+//inline logger& default_logger()
+//{
+//  static logger logger_ = [] {
+//    logger logger_ {
+//      "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
+//    };
+//    logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@));
+//#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
+//#ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
+//    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
+//#else
+//    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
+//#endif
+//#endif
+//    return logger_;
+//  }();
+//  return logger_;
+//}
 
 /**
  * @brief An object used for scoped log level setting
@@ -496,62 +487,16 @@ inline logger& default_logger()
  * will revert to the previous set level on destruction.
  */
 struct log_level_setter {
-  explicit log_level_setter(level_enum level)
+  explicit log_level_setter(logger logger_, level_enum level) : logger_{logger_}
   {
-    prev_level_ = default_logger().level();
-    default_logger().set_level(level);
+    prev_level_ = logger_.level();
+    logger_.set_level(level);
   }
-  ~log_level_setter() { default_logger().set_level(prev_level_); }
+  ~log_level_setter() { logger_.set_level(prev_level_); }
 
  private:
+  logger& logger_;
   level_enum prev_level_;
 };
 
-// Macros for easier logging, similar to spdlog.
-#if !defined(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL)
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO
-#endif
-
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(logger, level, ...) (logger).log(level, __VA_ARGS__)
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_TRACE
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_TRACE(...) \
-  @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::trace, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_TRACE(...) (void)0
-#endif
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_DEBUG(...) \
-  @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::debug, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_DEBUG(...) (void)0
-#endif
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_INFO
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_INFO(...) @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::info, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_INFO(...) (void)0
-#endif
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_WARN
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_WARN(...) @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::warn, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_WARN(...) (void)0
-#endif
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_ERROR
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ERROR(...) \
-  @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::error, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ERROR(...) (void)0
-#endif
-
-#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_CRITICAL
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_CRITICAL(...) \
-  @_RAPIDS_LOGGER_MACRO_PREFIX@_LOGGER_CALL(@_RAPIDS_LOGGER_NAMESPACE@::default_logger(), @_RAPIDS_LOGGER_NAMESPACE@::level_enum::critical, __VA_ARGS__)
-#else
-#define @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_CRITICAL(...) (void)0
-#endif
-
-}  // namespace @_RAPIDS_LOGGER_NAMESPACE@
+}  // namespace rapids_logger
