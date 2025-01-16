@@ -14,12 +14,9 @@
 
 # cmake-lint: disable=R0915
 
-include_guard(GLOBAL)
-
 cmake_minimum_required(VERSION 3.26.4 FATAL_ERROR)
 
 include(rapids_config.cmake)
-
 include(rapids-cmake)
 include(rapids-cpm)
 include(rapids-export)
@@ -65,16 +62,16 @@ set_target_properties(
 include(${rapids-cmake-dir}/cpm/spdlog.cmake)
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   set(CPM_DOWNLOAD_spdlog ON)
+  # The override file sets EXCLUDE_FROM_ALL to ON. There is no way to do that
+  # directly via rapids_cpm_spdlog right now because it explicitly passes in a
+  # value to the rapids_cpm_find call that will override the same version of
+  # the argument passed here (or at least, it's order-dependent which is
+  # selected so we're at the mercy of the rapids-cmake implementation). We
+  # should generalize the rapids_cpm_* functions to support this natively.
+  include(${rapids-cmake-dir}/cpm/package_override.cmake)
+  rapids_cpm_package_override(cmake/spdlog_override.cmake)
   rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
       CPM_ARGS
-      # TODO: EXCLUDE_FROM_ALL is not supported here because rapids-cmake
-      # overrides it. We need to find a way around that, ideally without
-      # writing an override.json file. If necessary we can add an option to
-      # rapids_cpm_spdlog, but this is a problem for all the rapids_cpm_*
-      # packages so ideally there would be some centralized handling of this.
-      # For now this line isn't actually doing anything, I'm using a patched
-      # version of rapids-cmake to make this "work".
-      EXCLUDE_FROM_ALL ON
       OPTIONS "BUILD_SHARED_LIBS OFF"
               "SPDLOG_BUILD_SHARED OFF"
    )
