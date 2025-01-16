@@ -7,6 +7,8 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-json
+      # Special-case the JSON hook for spdlog_override.cmake
+      - id: check-json
         files: cmake/spdlog_override.cmake
         types: [cmake]
   - repo: https://github.com/sirosen/texthooks
@@ -19,3 +21,35 @@ repos:
       - id: clang-format
         types_or: [c, c++]
         args: ["-fallback-style=none", "-style=file", "-i"]
+  - repo: local
+    hooks:
+      - id: cmake-format
+        name: cmake-format
+        entry: ./scripts/run-cmake-format.sh cmake-format
+        language: python
+        types: [cmake]
+        # Note that pre-commit autoupdate does not update the versions
+        # of dependencies, so we'll have to update this manually.
+        additional_dependencies:
+          - cmakelang==0.6.13
+        verbose: true
+        require_serial: true
+        exclude: |
+          (?x)^(
+            ^cmake/spdlog_override.cmake
+          )
+      - id: cmake-lint
+        name: cmake-lint
+        entry: ./scripts/run-cmake-format.sh cmake-lint
+        language: python
+        types: [cmake]
+        # Note that pre-commit autoupdate does not update the versions
+        # of dependencies, so we'll have to update this manually.
+        additional_dependencies:
+          - cmakelang==0.6.13
+        verbose: true
+        require_serial: true
+        exclude: |
+          (?x)^(
+            ^cmake/spdlog_override.cmake
+          )

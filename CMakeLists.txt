@@ -25,30 +25,33 @@ project(
   RAPIDS_LOGGER
   # TODO: Determine appropriate versioning.
   VERSION 0.0.1
-  LANGUAGES CXX)
+  LANGUAGES CXX
+)
 
 rapids_cmake_build_type(Release)
 
 rapids_cpm_init()
 
-option(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS "Build and link to spdlog in a way that maximizes all symbol hiding" ON)
+option(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS
+       "Build and link to spdlog in a way that maximizes all symbol hiding" ON
+)
 
 include(CMakeDependentOption)
-# If we are hiding all spdlog symbols then we need to use the bundled fmt
-# library, so this option depends on what the above is set to.
-cmake_dependent_option(RAPIDS_LOGGER_FMT_OPTION "The fmt option to use when building spdlog." "EXTERNAL_FMT_HO" "NOT RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS" "BUNDLED")
-
-# TODO: For Spark-RAPIDS we will have to support building this as a static
-# library. We may need some additional testing to make sure that will work.
-add_library(
-    rapids_logger
-    src/logger.cpp
+# If we are hiding all spdlog symbols then we need to use the bundled fmt library, so this option
+# depends on what the above is set to.
+cmake_dependent_option(
+  RAPIDS_LOGGER_FMT_OPTION "The fmt option to use when building spdlog." "EXTERNAL_FMT_HO"
+  "NOT RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS" "BUNDLED"
 )
+
+# TODO: For Spark-RAPIDS we will have to support building this as a static library. We may need some
+# additional testing to make sure that will work.
+add_library(rapids_logger src/logger.cpp)
 add_library(rapids_logger::rapids_logger ALIAS rapids_logger)
 target_include_directories(
-  rapids_logger
-  PUBLIC "$<BUILD_INTERFACE:${RAPIDS_LOGGER_SOURCE_DIR}/include>"
-         "$<INSTALL_INTERFACE:include>")
+  rapids_logger PUBLIC "$<BUILD_INTERFACE:${RAPIDS_LOGGER_SOURCE_DIR}/include>"
+                       "$<INSTALL_INTERFACE:include>"
+)
 set_target_properties(
   rapids_logger
   PROPERTIES BUILD_RPATH "\$ORIGIN"
@@ -64,25 +67,24 @@ set_target_properties(
 include(${rapids-cmake-dir}/cpm/spdlog.cmake)
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   set(CPM_DOWNLOAD_spdlog ON)
-  # The override file sets EXCLUDE_FROM_ALL to ON. There is no way to do that
-  # directly via rapids_cpm_spdlog right now because it explicitly passes in a
-  # value to the rapids_cpm_find call that will override the same version of
-  # the argument passed here (or at least, it's order-dependent which is
-  # selected so we're at the mercy of the rapids-cmake implementation). We
+  # The override file sets EXCLUDE_FROM_ALL to ON. There is no way to do that directly via
+  # rapids_cpm_spdlog right now because it explicitly passes in a value to the rapids_cpm_find call
+  # that will override the same version of the argument passed here (or at least, it's
+  # order-dependent which is selected so we're at the mercy of the rapids-cmake implementation). We
   # should generalize the rapids_cpm_* functions to support this natively.aasdfsd
   include(${rapids-cmake-dir}/cpm/package_override.cmake)
   rapids_cpm_package_override(cmake/spdlog_override.cmake)
-  rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
-      CPM_ARGS
-      OPTIONS "BUILD_SHARED_LIBS OFF"
-              "SPDLOG_BUILD_SHARED OFF"
-   )
-   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
+  rapids_cpm_spdlog(
+    FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION} CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF"
+                                           "SPDLOG_BUILD_SHARED OFF"
+  )
+  target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
-  rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
-      BUILD_EXPORT_SET rapids-logger-exports
-      INSTALL_EXPORT_SET rapids-logger-exports
-   )
+  rapids_cpm_spdlog(
+    FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
+    BUILD_EXPORT_SET rapids-logger-exports
+    INSTALL_EXPORT_SET rapids-logger-exports
+  )
 endif()
 target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
 

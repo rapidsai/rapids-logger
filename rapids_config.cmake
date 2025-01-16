@@ -11,10 +11,9 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 # =============================================================================
-# TODO: Do we want to version the logger in the same way as the rest of RAPIDS?
-# I expect it to be relatively static and not something we need to re-release
-# often. Furthermore, we won't be building packages of it since we only ever
-# need it cloned by CPM during the builds of other packages.
+# TODO: Do we want to version the logger in the same way as the rest of RAPIDS? I expect it to be
+# relatively static and not something we need to re-release often. Furthermore, we won't be building
+# packages of it since we only ever need it cloned by CPM during the builds of other packages.
 file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" _rapids_version)
 if(_rapids_version MATCHES [[^([0-9][0-9])\.([0-9][0-9])\.([0-9][0-9])]])
   set(RAPIDS_VERSION_MAJOR "${CMAKE_MATCH_1}")
@@ -26,13 +25,17 @@ else()
   string(REPLACE "\n" "\n  " _rapids_version_formatted "  ${_rapids_version}")
   message(
     FATAL_ERROR
-      "Could not determine RAPIDS version. Contents of VERSION file:\n${_rapids_version_formatted}")
+      "Could not determine RAPIDS version. Contents of VERSION file:\n${_rapids_version_formatted}"
+  )
 endif()
 
-if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/RAPIDS_LOGGER_RAPIDS-${RAPIDS_VERSION_MAJOR_MINOR}.cmake")
+if(NOT EXISTS
+   "${CMAKE_CURRENT_BINARY_DIR}/RAPIDS_LOGGER_RAPIDS-${RAPIDS_VERSION_MAJOR_MINOR}.cmake"
+)
   file(
     DOWNLOAD
     "https://raw.githubusercontent.com/rapidsai/rapids-cmake/branch-${RAPIDS_VERSION_MAJOR_MINOR}/RAPIDS.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/RAPIDS_LOGGER_RAPIDS-${RAPIDS_VERSION_MAJOR_MINOR}.cmake")
+    "${CMAKE_CURRENT_BINARY_DIR}/RAPIDS_LOGGER_RAPIDS-${RAPIDS_VERSION_MAJOR_MINOR}.cmake"
+  )
 endif()
 include("${CMAKE_CURRENT_BINARY_DIR}/RAPIDS_LOGGER_RAPIDS-${RAPIDS_VERSION_MAJOR_MINOR}.cmake")
