@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-#pragma once
+#include <logger.hpp>
 
-#include "../logger.hpp"
-
-// Include C headers for which we need symbols to be made public and don't want
-// the below symbol hiding pattern to apply.
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-
-// Start hiding before including spdlog headers.
-#pragma GCC visibility push(hidden)
+// TODO: Check if the below issue persists
 // This issue claims to have been resolved in gcc 8, but we still seem to encounter it here.
 // The code compiles and links and all tests pass, and nm shows symbols resolved as expected.
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80947
@@ -118,8 +109,8 @@ private:
 class logger_impl {
  public:
   logger_impl(std::string name) : underlying{spdlog::logger{name}} {
-    underlying.set_pattern(default_pattern());
-    // TODO: Every consuming library will need to set its own default levels
+    // TODO: Every consuming library will need to set its own default levels and pattern
+    //underlying.set_pattern(default_pattern());
     // when creating a default logger instance instead of setting the variables
     // in CMake to generate this.
     //auto const env_logging_level =
@@ -262,5 +253,3 @@ const logger::sink_vector& logger::sinks() const { return sinks_; }
 logger::sink_vector& logger::sinks() { return sinks_; }
 
 }  // namespace rapids_logger
-// This visibility pragma must be here so that both our logger types and those coming from includes are hidden.
-#pragma GCC visibility pop
