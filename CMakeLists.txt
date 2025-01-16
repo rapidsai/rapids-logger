@@ -38,6 +38,8 @@ include(CMakeDependentOption)
 # library, so this option depends on what the above is set to.
 cmake_dependent_option(RAPIDS_LOGGER_FMT_OPTION "The fmt option to use when building spdlog." "EXTERNAL_FMT_HO" "NOT RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS" "BUNDLED")
 
+# TODO: For Spark-RAPIDS we will have to support building this as a static
+# library. We may need some additional testing to make sure that will work.
 add_library(
     rapids_logger
     src/logger.cpp
@@ -67,7 +69,7 @@ if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   # value to the rapids_cpm_find call that will override the same version of
   # the argument passed here (or at least, it's order-dependent which is
   # selected so we're at the mercy of the rapids-cmake implementation). We
-  # should generalize the rapids_cpm_* functions to support this natively.
+  # should generalize the rapids_cpm_* functions to support this natively.aasdfsd
   include(${rapids-cmake-dir}/cpm/package_override.cmake)
   rapids_cpm_package_override(cmake/spdlog_override.cmake)
   rapids_cpm_spdlog(FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
