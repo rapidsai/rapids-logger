@@ -21,14 +21,16 @@
 #include <string>
 #include <vector>
 
-namespace __attribute__((visibility("default"))) rapids_logger {
+#define RAPIDS_LOGGER_EXPORT __attribute__((visibility("default")))
+
+namespace rapids_logger {
 
 /**
  * @brief The log levels supported by the logger.
  *
  * These levels correspond to the levels defined by spdlog.
  */
-enum class level_enum : int32_t {
+enum class RAPIDS_LOGGER_EXPORT level_enum : int32_t {
   trace    = 0,
   debug    = 1,
   info     = 2,
@@ -43,34 +45,37 @@ namespace detail {
 // Forward declare the implementation classes.
 class logger_impl;
 class sink_impl;
-}
+}  // namespace detail
 
 // Forward declare for the sink for the logger to use.
-class sink;
+class RAPIDS_LOGGER_EXPORT sink;
 using sink_ptr = std::shared_ptr<sink>;
 
 /**
  * @class logger
- * @brief A logger class that either uses the real implementation (via spdlog) or performs no-ops if
- * not supported.
+ * @brief A logger class that either uses the real implementation (via spdlog) or performs no-ops
+ * if not supported.
  */
-class logger {
+class RAPIDS_LOGGER_EXPORT logger {
  public:
-  logger() = delete;  ///< Not default constructible
-  logger(logger const&) = delete;  ///< Not copy constructible
+  logger()                         = delete;  ///< Not default constructible
+  logger(logger const&)            = delete;  ///< Not copy constructible
   logger& operator=(logger const&) = delete;  ///< Not copy assignable
 
-  logger(logger&& other);  ///< @default_move_constructor
+  logger(logger&& other);             ///< @default_move_constructor
   logger& operator=(logger&& other);  ///< @default_move_assignment{logger}
 
   /**
    * @brief A class to manage a vector of sinks.
    *
-   * This class is used internally by the logger class to manage its sinks. It handles synchronization of the sinks with the sinks in the underlying spdlog logger such that all vector-like operations performed on this class are reflected in the underlying spdlog logger's set of sinks.
+   * This class is used internally by the logger class to manage its sinks. It handles
+   * synchronization of the sinks with the sinks in the underlying spdlog logger such that all
+   * vector-like operations performed on this class are reflected in the underlying spdlog
+   * logger's set of sinks.
    */
   class sink_vector {
    public:
-    using Iterator = std::vector<sink_ptr>::iterator;  ///< The iterator type
+    using Iterator      = std::vector<sink_ptr>::iterator;        ///< The iterator type
     using ConstIterator = std::vector<sink_ptr>::const_iterator;  ///< The const iterator type
 
     /**
@@ -79,7 +84,10 @@ class logger {
      * @param parent The logger whose sinks are being managed
      * @param sinks The sinks to manage
      */
-    explicit sink_vector(logger& parent, std::vector<sink_ptr> sinks={}) : parent{parent}, sinks_{sinks} {}
+    explicit sink_vector(logger& parent, std::vector<sink_ptr> sinks = {})
+      : parent{parent}, sinks_{sinks}
+    {
+    }
 
     /**
      * @brief Add a sink to the vector.
@@ -146,9 +154,10 @@ class logger {
      * @return ConstIterator The const iterator
      */
     ConstIterator cend() const { return sinks_.cend(); }
+
    private:
-    logger& parent;  ///< The logger this vector belongs to
-    std::vector<sink_ptr> sinks_; ///< The sinks
+    logger& parent;                ///< The logger this vector belongs to
+    std::vector<sink_ptr> sinks_;  ///< The sinks
   };
 
   // TODO: When we migrate to C++20 we can use std::format and format strings
@@ -165,8 +174,9 @@ class logger {
    * @param format The format string
    * @param args The format arguments
    */
-  template<typename... Args>
-  void log(level_enum lvl, std::string const& format, Args&&... args) {
+  template <typename... Args>
+  void log(level_enum lvl, std::string const& format, Args&&... args)
+  {
     auto convert_to_c_string = [](auto&& arg) -> decltype(auto) {
       using ArgType = std::decay_t<decltype(arg)>;
       if constexpr (std::is_same_v<ArgType, std::string>) {
@@ -184,7 +194,8 @@ class logger {
     auto size = static_cast<std::size_t>(formatted_size) + 1;  // for null terminator
     // NOLINTNEXTLINE(modernize-avoid-c-arrays, cppcoreguidelines-avoid-c-arrays)
     std::unique_ptr<char[]> buf(new char[size]);
-    std::snprintf(buf.get(), size, format.c_str(), convert_to_c_string(std::forward<Args>(args))...);
+    std::snprintf(
+      buf.get(), size, format.c_str(), convert_to_c_string(std::forward<Args>(args))...);
     // NOLINTEND(cppcoreguidelines-pro-type-vararg)
     log(lvl, {buf.get(), buf.get() + size - 1});  // drop '\0'
   };
@@ -365,7 +376,7 @@ class logger {
 
  private:
   std::unique_ptr<detail::logger_impl> impl;  ///< The logger implementation
-  sink_vector sinks_;  ///< The sinks for the logger
+  sink_vector sinks_;                         ///< The sinks for the logger
 };
 
 /**
@@ -374,9 +385,10 @@ class logger {
  * These sinks are wrappers around the spdlog sinks that allow us to keep the
  * spdlog types private and avoid exposing them in the public API.
  */
-class sink {
+class RAPIDS_LOGGER_EXPORT sink {
  public:
   ~sink();
+
  protected:
   explicit sink(std::unique_ptr<detail::sink_impl> impl);
   std::unique_ptr<detail::sink_impl> impl;
@@ -389,7 +401,7 @@ class sink {
  *
  * See spdlog::sinks::basic_file_sink_mt for more information.
  */
-class basic_file_sink_mt : public sink {
+class RAPIDS_LOGGER_EXPORT basic_file_sink_mt : public sink {
  public:
   basic_file_sink_mt(std::string const& filename, bool truncate = false);
 };
@@ -399,7 +411,7 @@ class basic_file_sink_mt : public sink {
  *
  * See spdlog::sinks::ostream_sink_mt for more information.
  */
-class ostream_sink_mt : public sink {
+class RAPIDS_LOGGER_EXPORT ostream_sink_mt : public sink {
  public:
   ostream_sink_mt(std::ostream& stream, bool force_flush = false);
 };
@@ -409,7 +421,7 @@ class ostream_sink_mt : public sink {
  *
  * See spdlog::sinks::null_sink_mt for more information.
  */
-class null_sink_mt : public sink {
+class RAPIDS_LOGGER_EXPORT null_sink_mt : public sink {
  public:
   null_sink_mt();
 };
@@ -419,7 +431,7 @@ class null_sink_mt : public sink {
  *
  * See spdlog::sinks::stderr_sink_mt for more information.
  */
-class stderr_sink_mt : public sink {
+class RAPIDS_LOGGER_EXPORT stderr_sink_mt : public sink {
  public:
   stderr_sink_mt();
 };
@@ -430,55 +442,58 @@ typedef void (*flush_callback_t)();
 /**
  * @brief A sink that executes a callback whenever a message is logged.
  */
-class callback_sink_mt : public sink {
-public:
-    explicit callback_sink_mt(const log_callback_t &callback, const flush_callback_t &flush = nullptr);
+class RAPIDS_LOGGER_EXPORT callback_sink_mt : public sink {
+ public:
+  explicit callback_sink_mt(const log_callback_t& callback,
+                            const flush_callback_t& flush = nullptr);
 };
 
 /**
  * @brief Returns the default log filename for the global logger.
  *
- * If the environment variable `rapids_logger_DEBUG_LOG_FILE` is defined, its value is used as the path and
- * name of the log file. Otherwise, the file `rapids_logger_log.txt` in the current working directory is used.
+ * If the environment variable `rapids_logger_DEBUG_LOG_FILE` is defined, its value is used as the
+ * path and name of the log file. Otherwise, the file `rapids_logger_log.txt` in the current
+ * working directory is used.
  *
  * @return std::string The default log file name.
  */
-//inline sink_ptr default_sink()
+// inline sink_ptr default_sink()
 //{
-//  auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
-//  return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) : static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
-//}
+//   auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
+//   return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) :
+//   static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
+// }
 //
 /**
  * @brief Returns the default log pattern for the global logger.
  *
  * @return std::string The default log pattern.
  */
-//inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
+// inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
 //
 /**
  * @brief Get the default logger.
  *
  * @return logger& The default logger
  */
-//inline logger& default_logger()
+// inline logger& default_logger()
 //{
-//  static logger logger_ = [] {
-//    logger logger_ {
-//      "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
-//    };
-//    logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@));
-//#if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <= @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG
-//#ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
-//    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
-//#else
-//    logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
-//#endif
-//#endif
-//    return logger_;
-//  }();
-//  return logger_;
-//}
+//   static logger logger_ = [] {
+//     logger logger_ {
+//       "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
+//     };
+//     logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@));
+// #if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <=
+// @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG #ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
+//     logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
+// #else
+//     logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
+// #endif
+// #endif
+//     return logger_;
+//   }();
+//   return logger_;
+// }
 
 /**
  * @brief An object used for scoped log level setting
@@ -486,8 +501,8 @@ public:
  * Instances will set the logging to the level indicated on construction and
  * will revert to the previous set level on destruction.
  */
-struct log_level_setter {
-  explicit log_level_setter(logger logger_, level_enum level) : logger_{logger_}
+struct RAPIDS_LOGGER_EXPORT log_level_setter {
+  explicit log_level_setter(logger& logger_, level_enum level) : logger_{logger_}
   {
     prev_level_ = logger_.level();
     logger_.set_level(level);
