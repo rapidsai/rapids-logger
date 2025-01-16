@@ -59,3 +59,8 @@ repos:
       - id: codespell
         additional_dependencies: [tomli]
         args: ["--toml", "pyproject.toml"]
+  - repo: https://github.com/rapidsai/dependency-file-generator
+    rev: v1.16.0
+    hooks:
+      - id: rapids-dependency-file-generator
+        args: ["--clean"]

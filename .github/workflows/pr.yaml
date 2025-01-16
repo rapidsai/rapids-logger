@@ -13,5 +13,13 @@ jobs:
     container:
       image: rapidsai/ci-conda:latest
     steps:
-      - name: Test workflow existence
-        run: echo "Workflow exists"
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-0|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run ci/check_style.sh
+        run: ci/check_style.sh
