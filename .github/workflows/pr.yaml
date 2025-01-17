@@ -23,3 +23,17 @@ jobs:
           key: pre-commit-0|${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Run ci/check_style.sh
         run: ci/check_style.sh
+  conda-cpp-build:
+    needs: style
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@branch-25.02
+    with:
+      build_type: pull-request
+      matrix_filter: map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
+      script: ci/build_conda.sh
+  wheel-cpp-build:
+    needs: style
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@branch-25.02
+    with:
+      build_type: pull-request
+      matrix_filter: map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
+      script: ci/build_wheel.sh
