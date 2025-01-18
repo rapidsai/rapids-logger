@@ -19,6 +19,6 @@ sccache --show-adv-stats
 mkdir -p "${package_dir}/final_dist"
 python -m auditwheel repair \
     -w "${package_dir}/final_dist" \
-    "${package_dir}/dist/*"
+    ${package_dir}/dist/*
 
 RAPIDS_PY_WHEEL_NAME="${package_name}" rapids-upload-wheels-to-s3 cpp "${package_dir}/final_dist"
