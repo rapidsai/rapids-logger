@@ -19,7 +19,7 @@ sccache --zero-stats
 
 mamba install -y rattler-build
 
-rattler-build build --recipe conda/recipes/rapids-logger
+rattler-build build --recipe conda/recipes/rapids-logger --output-dir ${RAPIDS_CONDA_BLD_OUTPUT_DIR}
 
 sccache --show-adv-stats
 
