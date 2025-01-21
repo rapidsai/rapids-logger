@@ -3,11 +3,18 @@ files:
   checks:
     output: none
     includes:
-      - develop
+      - checks
+  py_build:
+    output: pyproject
+    pyproject_dir: python/rapids-logger
+    extras:
+      table: build-system
+    includes:
+      - py_build
 channels:
   - conda-forge
 dependencies:
-  develop:
+  checks:
     common:
       - output_types: [conda, requirements]
         packages:
@@ -16,3 +23,15 @@ dependencies:
           # added in 2.5.20, so we need to call out the minimum version needed for our plugins
           - identify>=2.5.20
           - python>=3.10
+  py_build:
+    common:
+      - output_types: [conda, requirements, pyproject]
+        packages:
+          - cmake>=3.26.4,!=3.30.0
+          - ninja
+      - output_types: conda
+        packages:
+          - scikit-build-core>=0.10.0
+      - output_types: [requirements, pyproject]
+        packages:
+          - scikit-build-core[pyproject]>=0.10.0
