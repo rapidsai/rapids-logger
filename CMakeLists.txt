@@ -35,6 +35,7 @@ rapids_cpm_init()
 option(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS
        "Build and link to spdlog in a way that maximizes all symbol hiding" ON
 )
+option(BUILD_TESTS "Configure CMake to build tests" ON)
 
 include(CMakeDependentOption)
 # If we are hiding all spdlog symbols then we need to use the bundled fmt library, so this option
@@ -88,6 +89,14 @@ else()
   )
 endif()
 target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
+
+if(BUILD_TESTS)
+  include(${rapids-cmake-dir}/cpm/gtest.cmake)
+  rapids_cpm_gtest(BUILD_STATIC)
+  include(CTest)
+  list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+  add_subdirectory(tests)
+endif()
 
 rapids_cmake_install_lib_dir(lib_dir)
 install(
