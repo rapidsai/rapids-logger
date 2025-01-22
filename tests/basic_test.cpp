@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+#include <rapids_logger/logger.hpp>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <rapids_logger/logger.hpp>
 
 #include <memory>
 #include <string>
