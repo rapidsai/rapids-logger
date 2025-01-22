@@ -16,7 +16,7 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <logger.hpp>
+#include <rapids_logger/logger.hpp>
 
 #include <memory>
 #include <string>

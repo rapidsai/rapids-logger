@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <logger.hpp>
+#include <rapids_logger/logger.hpp>
 
 // TODO: Check if the below issue persists
 // This issue claims to have been resolved in gcc 8, but we still seem to encounter it here.
