@@ -11,6 +11,7 @@ repos:
       - id: check-json
         files: cmake/spdlog_override.cmake
         types: [cmake]
+      - id: check-yaml
   - repo: https://github.com/sirosen/texthooks
     rev: 0.6.7
     hooks:
