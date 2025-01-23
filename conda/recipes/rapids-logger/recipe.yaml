@@ -26,6 +26,16 @@ requirements:
     - cmake ${{ cmake_version }}
     - ninja
     - git
+
+tests:
+  - script: |
+      for test in build/gtests/*; do
+        ${test}
+      done
+    files:
+      source:
+        - build/gtests/
+
 about:
   homepage: https://rapids.ai/
   repository: https://github.com/rapidsai/rapids-logger
