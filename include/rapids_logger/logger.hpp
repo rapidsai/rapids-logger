@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "log_levels.h"
+
 #include <memory>
 #include <ostream>
 #include <string>
@@ -32,13 +34,13 @@ namespace rapids_logger {
  * These levels correspond to the levels defined by spdlog.
  */
 enum class RAPIDS_LOGGER_EXPORT level_enum : int32_t {
-  trace    = 0,
-  debug    = 1,
-  info     = 2,
-  warn     = 3,
-  error    = 4,
-  critical = 5,
-  off      = 6,
+  trace    = RAPIDS_LOGGER_LOG_LEVEL_TRACE,
+  debug    = RAPIDS_LOGGER_LOG_LEVEL_DEBUG,
+  info     = RAPIDS_LOGGER_LOG_LEVEL_INFO,
+  warn     = RAPIDS_LOGGER_LOG_LEVEL_WARN,
+  error    = RAPIDS_LOGGER_LOG_LEVEL_ERROR,
+  critical = RAPIDS_LOGGER_LOG_LEVEL_CRITICAL,
+  off      = RAPIDS_LOGGER_LOG_LEVEL_OFF,
   n_levels
 };
 
