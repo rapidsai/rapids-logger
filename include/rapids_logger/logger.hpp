@@ -19,6 +19,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #define RAPIDS_LOGGER_EXPORT __attribute__((visibility("default")))
@@ -40,6 +41,19 @@ enum class RAPIDS_LOGGER_EXPORT level_enum : int32_t {
   off      = 6,
   n_levels
 };
+
+// Macro to define an operator for an enum class
+#define DEFINE_ENUM_CLASS_OPERATOR(Enum, Op)              \
+  constexpr bool operator Op(Enum lhs, Enum rhs)          \
+  {                                                       \
+    return static_cast<std::underlying_type_t<Enum>>(lhs) \
+      Op static_cast<std::underlying_type_t<Enum>>(rhs);  \
+  }
+
+DEFINE_ENUM_CLASS_OPERATOR(level_enum, <);
+DEFINE_ENUM_CLASS_OPERATOR(level_enum, <=);
+DEFINE_ENUM_CLASS_OPERATOR(level_enum, >);
+DEFINE_ENUM_CLASS_OPERATOR(level_enum, >=);
 
 namespace detail {
 // Forward declare the implementation classes.
