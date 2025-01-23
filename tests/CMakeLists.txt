@@ -12,24 +12,44 @@
 # the License.
 # =============================================================================
 
+if(NOT DEFINED PROJECT_NAME)
+  cmake_minimum_required(VERSION 3.26.4 FATAL_ERROR)
+
+  include(../rapids_config.cmake)
+  include(rapids-cpm)
+  rapids_cpm_init()
+
+  file(READ "${CMAKE_CURRENT_LIST_DIR}/../VERSION" _version)
+  string(STRIP "${_version}" _version)
+  project(
+    RAPIDS_LOGGER_TESTS
+    VERSION "${_version}"
+    LANGUAGES CXX
+  )
+
+  include(CTest)
+  find_package(rapids_logger "${_version}" EXACT REQUIRED)
+endif()
+
+include(${rapids-cmake-dir}/cpm/gtest.cmake)
+rapids_cpm_gtest(BUILD_STATIC)
+include(GoogleTest)
+list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+
 # This function takes in a test name and test source and handles setting all of the associated
 # properties and linking to build the test
 function(ConfigureTest CMAKE_TEST_NAME)
-  set(options)
-  set(one_value)
-  set(multi_value)
-  cmake_parse_arguments(_TEST "${options}" "${one_value}" "${multi_value}" ${ARGN})
-
-  add_executable(${CMAKE_TEST_NAME} ${_TEST_UNPARSED_ARGUMENTS})
+  list(POP_FRONT ARGV)
+  add_executable(${CMAKE_TEST_NAME} ${ARGV})
   set_target_properties(
     ${CMAKE_TEST_NAME}
-    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "$<BUILD_INTERFACE:${RAPIDS_LOGGER_BINARY_DIR}/gtests>"
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gtests>"
                CXX_STANDARD 17
                CXX_STANDARD_REQUIRED ON
   )
   target_link_libraries(
     ${CMAKE_TEST_NAME} PRIVATE rapids_logger::rapids_logger GTest::gmock GTest::gmock_main
-                               GTest::gtest GTest::gtest_main $<TARGET_NAME_IF_EXISTS:conda_env>
+                               GTest::gtest GTest::gtest_main
   )
   gtest_discover_tests(${CMAKE_TEST_NAME})
 endfunction()

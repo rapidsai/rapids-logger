@@ -13,10 +13,12 @@ source:
 build:
   number: ${{ GIT_DESCRIBE_NUMBER }}
   string: build_${{ GIT_DESCRIBE_HASH }}_${{ GIT_DESCRIBE_NUMBER }}
-  script:
-    - cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DBUILD_SHARED_LIBS=ON
-    - cmake --build build/
-    - cmake --install build/
+  script: |
+    cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DBUILD_SHARED_LIBS=ON
+    cmake --build build/
+    # Run tests from the build directory since they're cheap.
+    ctest --test-dir build/
+    cmake --install build/
 
 requirements:
   build:
@@ -29,12 +31,24 @@ requirements:
 
 tests:
   - script: |
-      for test in build/gtests/*; do
-        ${test}
-      done
+      cmake -S tests/ -B build -GNinja -DCMAKE_BUILD_TYPE=Release
+      cmake --build build/
+      ctest --test-dir build/
+
+    requirements:
+      build:
+        - ${{ compiler('c') }}
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+        - cmake ${{ cmake_version }}
+        - ninja
+        - git
+
     files:
       source:
-        - build/gtests/
+        - tests/
+        - rapids_config.cmake
+        - VERSION
 
 about:
   homepage: https://rapids.ai/

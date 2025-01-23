@@ -21,10 +21,12 @@ include(rapids-cmake)
 include(rapids-cpm)
 include(rapids-export)
 
+file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" _version)
+string(STRIP "${_version}" _version)
+
 project(
   RAPIDS_LOGGER
-  # TODO: Determine appropriate versioning.
-  VERSION 0.0.1
+  VERSION "${_version}"
   LANGUAGES CXX
 )
 
@@ -91,11 +93,7 @@ endif()
 target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
 
 if(BUILD_TESTS)
-  include(${rapids-cmake-dir}/cpm/gtest.cmake)
-  rapids_cpm_gtest(BUILD_STATIC)
   include(CTest)
-  include(GoogleTest)
-  list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
   add_subdirectory(tests)
 endif()
 
@@ -105,7 +103,9 @@ install(
   DESTINATION ${lib_dir}
   EXPORT rapids-logger-exports
 )
-install(DIRECTORY ${RAPIDS_LOGGER_SOURCE_DIR}/include DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY ${RAPIDS_LOGGER_SOURCE_DIR}/include/rapids_logger
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 set(doc_string
     [=[
