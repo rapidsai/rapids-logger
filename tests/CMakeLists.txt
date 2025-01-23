@@ -12,6 +12,7 @@
 # the License.
 # =============================================================================
 
+# The tests may be built as a standalone project or as part of the main project.
 if(NOT DEFINED PROJECT_NAME)
   cmake_minimum_required(VERSION 3.26.4 FATAL_ERROR)
 
