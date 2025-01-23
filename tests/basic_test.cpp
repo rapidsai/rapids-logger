@@ -145,3 +145,33 @@ TEST_F(LoggerTest, FlushTest)
   logger_.flush();
   EXPECT_EQ(1, flush_count);
 }
+
+TEST_F(LoggerTest, NullSink)
+{
+  logger_.info("info");
+  logger_.critical("critical");
+  EXPECT_EQ(this->sink_content(), "info\ncritical\n");
+  this->clear_sink();
+  logger_.sinks().clear();
+  logger_.sinks().push_back(std::make_shared<rapids_logger::null_sink_mt>());
+  logger_.info("info");
+  logger_.critical("critical");
+  EXPECT_EQ(this->sink_content(), "");
+}
+
+TEST_F(LoggerTest, LogLevelSetter)
+{
+  {
+    rapids_logger::log_level_setter setter{logger_, rapids_logger::level_enum::trace};
+    logger_.info("trace");
+    logger_.critical("critical");
+    EXPECT_EQ(this->sink_content(), "trace\ncritical\n");
+  }
+  this->clear_sink();
+  {
+    rapids_logger::log_level_setter setter{logger_, rapids_logger::level_enum::off};
+    logger_.info("trace");
+    logger_.critical("critical");
+    EXPECT_EQ(this->sink_content(), "");
+  }
+}
