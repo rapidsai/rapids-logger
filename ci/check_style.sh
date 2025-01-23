@@ -14,7 +14,9 @@ rapids-dependency-file-generator \
   --matrix "cuda=${RAPIDS_CUDA_VERSION%.*};arch=$(arch);py=${RAPIDS_PY_VERSION}" | tee "${ENV_YAML_DIR}/env.yaml"
 
 rapids-mamba-retry env create --yes -f "${ENV_YAML_DIR}/env.yaml" -n checks
+set +u
 conda activate checks
+set -u
 
 # TODO: Figure out the long-term plan here since the VERSION file should probably go.
 RAPIDS_VERSION_MAJOR_MINOR="$(rapids-version-major-minor)"
