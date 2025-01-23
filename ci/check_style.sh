@@ -14,13 +14,10 @@ rapids-dependency-file-generator \
   --matrix "cuda=${RAPIDS_CUDA_VERSION%.*};arch=$(arch);py=${RAPIDS_PY_VERSION}" | tee "${ENV_YAML_DIR}/env.yaml"
 
 rapids-mamba-retry env create --yes -f "${ENV_YAML_DIR}/env.yaml" -n checks
-set +u
 conda activate checks
-set -u
 
-# TODO: Figure out the long-term plan here since the VERSION file should probably go.
-RAPIDS_VERSION_MAJOR_MINOR="$(rapids-version-major-minor)"
-
+# TODO: Figure out the best way to set this version value long-term
+RAPIDS_VERSION_MAJOR_MINOR="25.02"
 FORMAT_FILE_URL="https://raw.githubusercontent.com/rapidsai/rapids-cmake/branch-${RAPIDS_VERSION_MAJOR_MINOR}/cmake-format-rapids-cmake.json"
 export RAPIDS_CMAKE_FORMAT_FILE=/tmp/rapids_cmake_ci/cmake-formats-rapids-cmake.json
 mkdir -p $(dirname ${RAPIDS_CMAKE_FORMAT_FILE})
