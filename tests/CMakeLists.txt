@@ -31,7 +31,7 @@ function(ConfigureTest CMAKE_TEST_NAME)
     ${CMAKE_TEST_NAME} PRIVATE rapids_logger::rapids_logger GTest::gmock GTest::gmock_main
                                GTest::gtest GTest::gtest_main $<TARGET_NAME_IF_EXISTS:conda_env>
   )
-  add_test(NAME ${CMAKE_TEST_NAME} COMMAND ${CMAKE_TEST_NAME})
+  gtest_discover_tests(${CMAKE_TEST_NAME})
 endfunction()
 
 ConfigureTest(BASIC_TEST basic_test.cpp)
