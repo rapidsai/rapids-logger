@@ -107,6 +107,15 @@ install(DIRECTORY ${RAPIDS_LOGGER_SOURCE_DIR}/include/rapids_logger
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+# Both the function to create macros and the template must be installed so that they are available
+# to use from the installed package.
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in
+        DESTINATION share/rapids_logger/template
+)
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
+        DESTINATION lib/cmake/rapids_logger
+)
+
 set(doc_string
     [=[
 Provide targets for the rapids-logger library.
