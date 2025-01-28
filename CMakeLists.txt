@@ -108,7 +108,7 @@ install(DIRECTORY ${RAPIDS_LOGGER_SOURCE_DIR}/include/rapids_logger
 # Both the function to create macros and the template must be installed so that they are available
 # to use from the installed package. TODO: This file should probably go into share and not be right
 # alongside the CMake file in lib, but this is easiest for now
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/logger_macros.hpp.in
         DESTINATION "${lib_dir}/cmake/rapids_logger"
 )
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
@@ -116,14 +116,14 @@ install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
 )
 
 # cmake-lint: disable=E1126
-file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in"
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/logger_macros.hpp.in"
      "${CMAKE_CURRENT_BINARY_DIR}/logger_macros.hpp.in"
 )
 file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake"
      "${CMAKE_CURRENT_BINARY_DIR}/create_logger_macros.cmake"
 )
 # For e.g. CPM builds from source we need to make sure that the function is available.
-include(template/create_logger_macros.cmake)
+include(cmake/create_logger_macros.cmake)
 
 set(doc_string
     [=[
