@@ -20,6 +20,7 @@
 #include <gtest/gtest.h>
 
 #include <memory>
+#include <sstream>
 #include <string>
 
 struct LoggerTest : public ::testing::Test {

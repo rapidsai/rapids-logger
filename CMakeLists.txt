@@ -108,12 +108,21 @@ install(DIRECTORY ${RAPIDS_LOGGER_SOURCE_DIR}/include/rapids_logger
 )
 
 # Both the function to create macros and the template must be installed so that they are available
-# to use from the installed package.
+# to use from the installed package. TODO: This file should probably go into share and not be right
+# alongside the CMake file in lib, but this is easiest for now
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in
-        DESTINATION share/rapids_logger/template
+        DESTINATION "${lib_dir}/cmake/rapids_logger"
 )
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
-        DESTINATION lib/cmake/rapids_logger
+        DESTINATION "${lib_dir}/cmake/rapids_logger"
+)
+
+# cmake-lint: disable=E1126
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in"
+     "${CMAKE_CURRENT_BINARY_DIR}/logger_macros.hpp.in"
+)
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake"
+     "${CMAKE_CURRENT_BINARY_DIR}/create_logger_macros.cmake"
 )
 
 set(doc_string
@@ -135,12 +144,20 @@ targets:
 
     ]=]
 )
+
+set(code_string
+    [=[
+include("${CMAKE_CURRENT_LIST_DIR}/create_logger_macros.cmake")
+]=]
+)
+
 rapids_export(
   INSTALL rapids_logger
   EXPORT_SET rapids-logger-exports
   GLOBAL_TARGETS rapids_logger
   NAMESPACE rapids_logger::
   DOCUMENTATION doc_string
+  FINAL_CODE_BLOCK code_string
 )
 rapids_export(
   BUILD rapids_logger
@@ -148,4 +165,5 @@ rapids_export(
   GLOBAL_TARGETS rapids_logger
   NAMESPACE rapids_logger::
   DOCUMENTATION doc_string
+  FINAL_CODE_BLOCK code_string
 )

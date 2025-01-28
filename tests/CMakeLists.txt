@@ -56,3 +56,5 @@ function(ConfigureTest CMAKE_TEST_NAME)
 endfunction()
 
 ConfigureTest(BASIC_TEST basic_test.cpp)
+
+add_subdirectory(template)

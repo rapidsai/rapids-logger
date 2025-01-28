@@ -465,53 +465,6 @@ class RAPIDS_LOGGER_EXPORT callback_sink_mt : public sink {
 };
 
 /**
- * @brief Returns the default log filename for the global logger.
- *
- * If the environment variable `rapids_logger_DEBUG_LOG_FILE` is defined, its value is used as the
- * path and name of the log file. Otherwise, the file `rapids_logger_log.txt` in the current
- * working directory is used.
- *
- * @return std::string The default log file name.
- */
-// inline sink_ptr default_sink()
-//{
-//   auto* filename = std::getenv("@_RAPIDS_LOGGER_MACRO_PREFIX@_DEBUG_LOG_FILE");
-//   return (filename == nullptr) ? static_cast<sink_ptr>(std::make_shared<stderr_sink_mt>()) :
-//   static_cast<sink_ptr>(std::make_shared<basic_file_sink_mt>(filename, true));
-// }
-//
-/**
- * @brief Returns the default log pattern for the global logger.
- *
- * @return std::string The default log pattern.
- */
-// inline std::string default_pattern() { return "[%6t][%H:%M:%S:%f][%-6l] %v"; }
-//
-/**
- * @brief Get the default logger.
- *
- * @return logger& The default logger
- */
-// inline logger& default_logger()
-//{
-//   static logger logger_ = [] {
-//     logger logger_ {
-//       "@_RAPIDS_LOGGER_MACRO_PREFIX@", {default_sink()}
-//     };
-//     logger_.set_level(static_cast<level_enum>(@_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_@_RAPIDS_LOGGER_DEFAULT_LEVEL@));
-// #if @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_ACTIVE_LEVEL <=
-// @_RAPIDS_LOGGER_MACRO_PREFIX@_LOG_LEVEL_DEBUG #ifdef CUDA_API_PER_THREAD_DEFAULT_STREAM
-//     logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS ENABLED] -----");
-// #else
-//     logger_.debug("----- @_RAPIDS_LOGGER_MACRO_PREFIX@ LOG [PTDS DISABLED] -----");
-// #endif
-// #endif
-//     return logger_;
-//   }();
-//   return logger_;
-// }
-
-/**
  * @brief An object used for scoped log level setting
  *
  * Instances will set the logging to the level indicated on construction and
