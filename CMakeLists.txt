@@ -12,8 +12,6 @@
 # the License.
 # =============================================================================
 
-# cmake-lint: disable=R0915
-
 cmake_minimum_required(VERSION 3.26.4 FATAL_ERROR)
 
 include(rapids_config.cmake)
