@@ -19,6 +19,7 @@
 #include <rapids_logger/logger.hpp>
 
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -43,14 +44,15 @@ inline rapids_logger::logger& default_logger()
 
 int main()
 {
-  std::string msg{"Hello, World!"};
-  auto expected = msg + "\n";
-  RAPIDS_TEST_LOG_INFO(msg);
-  if (default_stream().str() == expected) {
+  RAPIDS_TEST_LOG_TRACE("trace");
+  RAPIDS_TEST_LOG_DEBUG("debug");
+  RAPIDS_TEST_LOG_INFO("info");
+  RAPIDS_TEST_LOG_WARN("warn");
+  RAPIDS_TEST_LOG_ERROR("error");
+  RAPIDS_TEST_LOG_CRITICAL("critical");
+  if (default_stream().str() == "info\nwarn\nerror\ncritical\n") {
     return 0;
   } else {
-    std::cerr << "Expected: " << expected << std::endl;
-    std::cerr << "Actual: " << default_stream().str() << std::endl;
     return 1;
   }
 }
