@@ -40,7 +40,9 @@ function(add_cmake_test source_or_dir)
 
   # The third argument is a list of extra arguments to pass to CMake.
   if(DEFINED ARGV2)
-    list(APPEND extra_args "${ARGV2}")
+    foreach(arg ${ARGV2})
+      list(APPEND extra_args "${arg}")
+    endforeach()
   endif()
 
   set(build_dir "${CMAKE_CURRENT_BINARY_DIR}/${test_name}-build")
