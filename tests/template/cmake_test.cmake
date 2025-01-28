@@ -13,7 +13,10 @@
 # =============================================================================
 include_guard(GLOBAL)
 
-# Create a test that configures, builds, and runs a CMake project.
+# Create a test that configures, builds, and runs a CMake project. Requires a single argument, which
+# is the name of the source file or directory containing the CMAKE_COMMAND file. The second and
+# third arguments are optional. The second argument is a suffix to append to the test name. The
+# third argument is a list of extra arguments to pass to CMake when configuring the test.
 function(add_cmake_test source_or_dir)
 
   if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}")
