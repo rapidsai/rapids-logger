@@ -16,6 +16,12 @@ include_guard(GLOBAL)
 # Create a test that configures, builds, and runs a CMake project.
 function(add_cmake_test source_or_dir)
 
+  if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}")
+    set(src_dir "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}/")
+  else()
+    message(FATAL_ERROR "Unable to find a file or directory named: ${source_or_dir}")
+  endif()
+
   cmake_path(GET source_or_dir STEM base_test_name)
   set(test_name "${base_test_name}")
 
@@ -23,29 +29,28 @@ function(add_cmake_test source_or_dir)
     set(test_name "${test_name}_${ARGV1}")
   endif()
 
+  # If we are building the tests as part of the main build, each CMake tests needs to be told where
+  # to find the rapids-logger build. If not, we assume that the caller is responsible for making
+  # them discoverable (either by having them installed to the prefix path or by setting
+  # CMAKE_PREFIX_PATH).
   set(extra_args "")
-  if(DEFINED ARGV2)
-    set(extra_args "${ARGV2}")
+  if(NOT BUILDING_STANDALONE_TESTS)
+    list(APPEND extra_args "-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}")
   endif()
 
-  if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}")
-    set(src_dir "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}/")
-  else()
-    message(FATAL_ERROR "Unable to find a file or directory named: ${source_or_dir}")
+  # The third argument is a list of extra arguments to pass to CMake.
+  if(DEFINED ARGV2)
+    list(APPEND extra_args "${ARGV2}")
   endif()
 
   set(build_dir "${CMAKE_CURRENT_BINARY_DIR}/${test_name}-build")
-
   add_test(
     NAME ${test_name}_configure
     COMMAND
       ${CMAKE_COMMAND} -S ${src_dir} -B ${build_dir}
-      # TODO: Not sure if really need to hard code this, maybe just use whatever default generator
-      # is discovered.
-      -G "Ninja"
-      # TODO: This needs to also work when we build the tests separately. In that case, probably
-      # want "rapids_logger_BINARY_DIR".
-      -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR} ${extra_args}
+      # Hardcoding Ninja to simplify things. Assumes Ninja is available when running tests, which is
+      # not a very onerous requirement.
+      -G Ninja ${extra_args}
   )
 
   add_test(NAME ${test_name}_build COMMAND ${CMAKE_COMMAND} --build ${build_dir})

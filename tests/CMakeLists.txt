@@ -30,6 +30,9 @@ if(NOT DEFINED PROJECT_NAME)
 
   include(CTest)
   find_package(rapids_logger "${_version}" EXACT REQUIRED)
+  set(BUILDING_STANDALONE_TESTS ON)
+else()
+  set(BUILDING_STANDALONE_TESTS OFF)
 endif()
 
 include(${rapids-cmake-dir}/cpm/gtest.cmake)
