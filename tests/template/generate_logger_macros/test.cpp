@@ -22,7 +22,6 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
-#include <string>
 
 inline std::ostringstream& default_stream()
 {
