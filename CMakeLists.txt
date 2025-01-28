@@ -122,6 +122,8 @@ file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/template/logger_macros.hpp.in"
 file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake"
      "${CMAKE_CURRENT_BINARY_DIR}/create_logger_macros.cmake"
 )
+# For e.g. CPM builds from source we need to make sure that the function is available.
+include(cmake/create_logger_macros.cmake)
 
 set(doc_string
     [=[
