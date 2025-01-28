@@ -36,6 +36,7 @@ option(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS
        "Build and link to spdlog in a way that maximizes all symbol hiding" ON
 )
 option(BUILD_TESTS "Configure CMake to build tests" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 include(CMakeDependentOption)
 # If we are hiding all spdlog symbols then we need to use the bundled fmt library, so this option

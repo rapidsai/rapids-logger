@@ -34,6 +34,5 @@ endif()
 unset(rapids_logger_FOUND)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(BUILD_SHARED_LIBS ON)
 set(BUILD_TESTS OFF)
 add_subdirectory(../../ rapids-logger-cpp)

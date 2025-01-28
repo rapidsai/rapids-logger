@@ -14,7 +14,7 @@ build:
   number: ${{ GIT_DESCRIBE_NUMBER }}
   string: build_${{ GIT_DESCRIBE_HASH }}_${{ GIT_DESCRIBE_NUMBER }}
   script: |
-    cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DBUILD_SHARED_LIBS=ON
+    cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX
     cmake --build build/
     # Run tests from the build directory since they're cheap.
     ctest --test-dir build/ --output-on-failure
