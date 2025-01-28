@@ -40,6 +40,9 @@ function(add_cmake_test source_or_dir)
     NAME ${test_name}_configure
     COMMAND
       ${CMAKE_COMMAND} -S ${src_dir} -B ${build_dir}
+      # TODO: Not sure if really need to hard code this, maybe just use whatever default generator
+      # is discovered.
+      -G "Ninja"
       # TODO: This needs to also work when we build the tests separately. In that case, probably
       # want "rapids_logger_BINARY_DIR".
       -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR} ${extra_args}
