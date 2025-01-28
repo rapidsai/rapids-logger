@@ -16,6 +16,7 @@
 
 #include "logger_macros.hpp"
 
+#include <rapids_logger/log_levels.h>
 #include <rapids_logger/logger.hpp>
 
 #include <iostream>
@@ -50,7 +51,17 @@ int main()
   RAPIDS_TEST_LOG_WARN("warn");
   RAPIDS_TEST_LOG_ERROR("error");
   RAPIDS_TEST_LOG_CRITICAL("critical");
-  if (default_stream().str() == "info\nwarn\nerror\ncritical\n") {
+  std::ostringstream expected;
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_TRACE) { expected << "trace\n"; }
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_DEBUG) { expected << "debug\n"; }
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_INFO) { expected << "info\n"; }
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_WARN) { expected << "warn\n"; }
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_ERROR) { expected << "error\n"; }
+  if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_CRITICAL) {
+    expected << "critical\n";
+  }
+  std::cout << "The log output is: " << default_stream().str() << std::endl;
+  if (default_stream().str() == expected.str()) {
     return 0;
   } else {
     return 1;

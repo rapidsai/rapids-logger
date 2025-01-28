@@ -16,7 +16,17 @@ include_guard(GLOBAL)
 # Create a test that configures, builds, and runs a CMake project.
 function(add_cmake_test source_or_dir)
 
-  cmake_path(GET source_or_dir STEM test_name)
+  cmake_path(GET source_or_dir STEM base_test_name)
+  set(test_name "${base_test_name}")
+
+  if(DEFINED ARGV1)
+    set(test_name "${test_name}_${ARGV1}")
+  endif()
+
+  set(extra_args "")
+  if(DEFINED ARGV2)
+    set(extra_args "${ARGV2}")
+  endif()
 
   if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}")
     set(src_dir "${CMAKE_CURRENT_LIST_DIR}/${source_or_dir}/")
@@ -35,12 +45,12 @@ function(add_cmake_test source_or_dir)
       -G "Ninja"
       # TODO: This needs to also work when we build the tests separately. In that case, probably
       # want "rapids_logger_BINARY_DIR".
-      -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}
+      -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR} ${extra_args}
   )
 
   add_test(NAME ${test_name}_build COMMAND ${CMAKE_COMMAND} --build ${build_dir})
   set_tests_properties(${test_name}_build PROPERTIES DEPENDS ${test_name}_configure)
 
-  add_test(NAME ${test_name}_run COMMAND ${build_dir}/${test_name})
+  add_test(NAME ${test_name}_run COMMAND ${build_dir}/${base_test_name})
   set_tests_properties(${test_name}_run PROPERTIES DEPENDS ${test_name}_build)
 endfunction()
