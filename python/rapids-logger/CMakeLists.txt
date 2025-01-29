@@ -22,14 +22,14 @@ string(REGEX MATCH "[0-9]+\.[0-9]+\.[0-9]+" _version "${_version}")
 
 project(
   rapids-logger-python
-  VERSION "${RAPIDS_VERSION}"
+  VERSION "${_version}"
   LANGUAGES CXX
 )
 
 # Check if rapids-logger is already available. If so, it is the user's responsibility to ensure that
 # the CMake package is also available when building any Python packages that may depend on the
 # rapids-logger Python package (e.g. cudf).
-find_package(rapids_logger "${RAPIDS_VERSION}")
+find_package(rapids_logger "${_version}")
 
 if(rapids_logger_FOUND)
   return()
