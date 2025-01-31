@@ -46,4 +46,4 @@ jobs:
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-wheel:latest"
-      run_script: "ci/configure_cpp_static.sh"
+      run_script: "ci/build_static.sh"
