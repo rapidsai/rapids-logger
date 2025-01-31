@@ -60,8 +60,7 @@ function(add_cmake_test source_or_dir)
     COMMAND
       ${CMAKE_COMMAND} -S ${src_dir} -B ${build_dir}
       # This function assumes _version is set in the calling file.
-      -Drapids_logger_version=${_version}
-      ${generator} ${extra_args}
+      -Drapids_logger_version=${_version} ${generator} ${extra_args}
   )
 
   add_test(NAME ${test_name}_build COMMAND ${CMAKE_COMMAND} --build ${build_dir})
