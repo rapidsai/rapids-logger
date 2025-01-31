@@ -39,11 +39,12 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 include(CMakeDependentOption)
 # We cannot hide all spdlog symbols if we are building a static library.
 cmake_dependent_option(
-    RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS "Build and link to spdlog in a way that maximizes all symbol hiding" ON
-    "BUILD_SHARED_LIBS" OFF
+  RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS
+  "Build and link to spdlog in a way that maximizes all symbol hiding" ON "BUILD_SHARED_LIBS" OFF
 )
 
-# If we are hiding all spdlog symbols then we need to use the bundled fmt library, so this option is only configurable if we are not hiding those symbols.
+# If we are hiding all spdlog symbols then we need to use the bundled fmt library, so this option is
+# only configurable if we are not hiding those symbols.
 cmake_dependent_option(
   RAPIDS_LOGGER_FMT_OPTION "The fmt option to use when building spdlog." "EXTERNAL_FMT_HO"
   "NOT RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS" "BUNDLED"
