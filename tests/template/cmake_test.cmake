@@ -48,6 +48,12 @@ function(add_cmake_test source_or_dir)
     endforeach()
   endif()
 
+  find_program(NINJA_EXECUTABLE ninja2)
+  set(generator)
+  if(NOT "${NINJA_EXECUTABLE}" STREQUAL "NINJA_EXECUTABLE-NOTFOUND")
+    set(generator "-GNinja")
+  endif()
+
   set(build_dir "${CMAKE_CURRENT_BINARY_DIR}/${test_name}-build")
   add_test(
     NAME ${test_name}_configure
@@ -55,9 +61,7 @@ function(add_cmake_test source_or_dir)
       ${CMAKE_COMMAND} -S ${src_dir} -B ${build_dir}
       # This function assumes _version is set in the calling file.
       -Drapids_logger_version=${_version}
-      # Hardcoding Ninja to simplify things. Assumes Ninja is available when running tests, which is
-      # not a very onerous requirement.
-      -G Ninja ${extra_args}
+      ${generator} ${extra_args}
   )
 
   add_test(NAME ${test_name}_build COMMAND ${CMAKE_COMMAND} --build ${build_dir})
