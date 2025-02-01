@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rapids_logger._version import __git_commit__, __version__
+from rapids_logger._version import __version__
 from rapids_logger.load import load_library
 
-__all__ = ["__git_commit__", "__version__", "load_library"]
+__all__ = ["__version__", "load_library"]
