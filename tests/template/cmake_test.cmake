@@ -48,7 +48,7 @@ function(add_cmake_test source_or_dir)
     endforeach()
   endif()
 
-  find_program(NINJA_EXECUTABLE ninja2)
+  find_program(NINJA_EXECUTABLE ninja)
   set(generator)
   if(NOT "${NINJA_EXECUTABLE}" STREQUAL "NINJA_EXECUTABLE-NOTFOUND")
     set(generator "-GNinja")
