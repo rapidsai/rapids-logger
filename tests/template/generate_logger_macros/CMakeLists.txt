@@ -30,3 +30,4 @@ target_include_directories(
   generate_logger_macros PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
                                 "$<INSTALL_INTERFACE:include>"
 )
+set_target_properties(generate_logger_macros PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
