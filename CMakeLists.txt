@@ -77,7 +77,7 @@ if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   # rapids_cpm_spdlog right now because it explicitly passes in a value to the rapids_cpm_find call
   # that will override the same version of the argument passed here (or at least, it's
   # order-dependent which is selected so we're at the mercy of the rapids-cmake implementation). We
-  # should generalize the rapids_cpm_* functions to support this natively.aasdfsd
+  # should generalize the rapids_cpm_* functions to support this natively.
   include(${rapids-cmake-dir}/cpm/package_override.cmake)
   rapids_cpm_package_override(${CMAKE_CURRENT_LIST_DIR}/cmake/spdlog_override.cmake)
   rapids_cpm_spdlog(
