@@ -16,7 +16,7 @@
 # packages of it since we only ever need it cloned by CPM during the builds of other packages. On
 # the other hand we still need a way to get a suitable rapids-cmake version. Either that, or we need
 # to avoid using rapids-cmake.
-set(_rapids_version 25.02.00)
+set(_rapids_version 25.04.00)
 if(_rapids_version MATCHES [[^([0-9][0-9])\.([0-9][0-9])\.([0-9][0-9])]])
   set(RAPIDS_VERSION_MAJOR "${CMAKE_MATCH_1}")
   set(RAPIDS_VERSION_MINOR "${CMAKE_MATCH_2}")

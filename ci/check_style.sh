@@ -17,7 +17,7 @@ rapids-mamba-retry env create --yes -f "${ENV_YAML_DIR}/env.yaml" -n checks
 conda activate checks
 
 # TODO: Figure out the best way to set this version value long-term
-RAPIDS_VERSION_MAJOR_MINOR="25.02"
+RAPIDS_VERSION_MAJOR_MINOR="25.04"
 FORMAT_FILE_URL="https://raw.githubusercontent.com/rapidsai/rapids-cmake/branch-${RAPIDS_VERSION_MAJOR_MINOR}/cmake-format-rapids-cmake.json"
 export RAPIDS_CMAKE_FORMAT_FILE=/tmp/rapids_cmake_ci/cmake-formats-rapids-cmake.json
 mkdir -p "$(dirname ${RAPIDS_CMAKE_FORMAT_FILE})"
