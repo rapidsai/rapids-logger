@@ -18,7 +18,7 @@ build:
     # Run tests from the build directory since they're cheap.
     ctest --test-dir build/ --output-on-failure
     cmake --install build/
-    # Verify the symbols
+    # Check that no undefined symbols are present in the shared library
     LIB="build/librapids_logger.so"
     test -f build/librapids_logger.so
     ./ci/check_symbols.sh build/librapids_logger.so

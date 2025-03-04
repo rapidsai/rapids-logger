@@ -5,6 +5,8 @@ set -euo pipefail
 
 package_name="rapids_logger"
 package_dir="python/rapids-logger"
+dist_dir="${package_dir}/dist"
+final_dir="${package_dir}/final_dist"
 
 source rapids-configure-sccache
 
@@ -13,16 +15,22 @@ rapids-generate-version > ./VERSION
 rapids-logger "Building '${package_name}' wheel"
 sccache --zero-stats
 python -m pip wheel \
-    -w "${package_dir}/dist" \
+    -w "${dist_dir}" \
     -v \
     --no-deps \
     --disable-pip-version-check \
     "${package_dir}"
 sccache --show-adv-stats
 
-mkdir -p "${package_dir}/final_dist"
+mkdir -p "${final_dir}"
 python -m auditwheel repair \
-    -w "${package_dir}/final_dist" \
-    ${package_dir}/dist/*
+    -w "${final_dir}" \
+    "${dist_dir}/"*
 
-RAPIDS_PY_WHEEL_NAME="${package_name}" rapids-upload-wheels-to-s3 cpp "${package_dir}/final_dist"
+# Check that no undefined symbols are present in the shared library
+WHEEL_EXPORT_DIR="$(mktemp -d)"
+unzip -d "${WHEEL_EXPORT_DIR}" "${final_dir}/*"
+LOGGER_LIBRARY=$(find "${WHEEL_EXPORT_DIR}" -type f -name 'librapids_logger.so')
+./ci/check_symbols.sh "${LOGGER_LIBRARY}"
+
+RAPIDS_PY_WHEEL_NAME="${package_name}" rapids-upload-wheels-to-s3 cpp "${final_dir}"
