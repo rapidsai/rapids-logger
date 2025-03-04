@@ -84,7 +84,7 @@ if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
     FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION} CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF"
                                            "SPDLOG_BUILD_SHARED OFF"
   )
-  set_target_properties(spdlog PROPERTIES CXX_VISIBILITY_PRESET hidden POSITION_INDEPENDENT_CODE ON)
+  set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
   rapids_cpm_spdlog(

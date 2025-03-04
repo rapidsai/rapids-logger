@@ -18,6 +18,11 @@ build:
     # Run tests from the build directory since they're cheap.
     ctest --test-dir build/ --output-on-failure
     cmake --install build/
+    # Verify the symbols
+    LIB="build/librapids_logger.so"
+    test -f build/librapids_logger.so
+    ./ci/check_symbols.sh build/librapids_logger.so
+
 
 requirements:
   build:
