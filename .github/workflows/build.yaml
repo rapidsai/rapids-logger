@@ -72,7 +72,7 @@ jobs:
       branch: ${{ inputs.branch }}
       sha: ${{ inputs.sha }}
       date: ${{ inputs.date }}
-      container_image: "rapidsai/ci-wheel:latest"
+      container_image: "rapidsai/ci-conda:latest"
       run_script: "ci/build_static.sh"
   dynamic-build:
     secrets: inherit
