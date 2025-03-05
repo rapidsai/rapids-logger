@@ -90,9 +90,13 @@ else()
   rapids_cpm_spdlog(
     FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
     BUILD_EXPORT_SET rapids-logger-exports
-    INSTALL_EXPORT_SET rapids-logger-exports
+    INSTALL_EXPORT_SET
+      rapids-logger-exports CPM_ARGS OPTIONS "BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS}"
+                            "SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS}"
   )
-  set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  if(spdlog_ADDED)
+    set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  endif()
 endif()
 target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
 

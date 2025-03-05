@@ -59,11 +59,11 @@ int main()
   if (RAPIDS_TEST_LOG_ACTIVE_LEVEL <= RAPIDS_LOGGER_LOG_LEVEL_CRITICAL) {
     expected << "critical\n";
   }
-  // Print to make debugging easier with verbose ctest outputs in case of failure.
-  std::cout << "The log output is: " << default_stream().str() << std::endl;
   if (default_stream().str() == expected.str()) {
     return 0;
   } else {
+    // Print to make debugging easier with verbose ctest outputs in case of failure.
+    std::cout << "The log output is: " << default_stream().str() << std::endl;
     return 1;
   }
 }
