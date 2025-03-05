@@ -11,8 +11,13 @@ files:
       table: build-system
     includes:
       - py_build
+  test_dynamic_linking:
+    output: none
+    includes:
+      - test_dynamic_linking
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   checks:
     common:
@@ -35,3 +40,12 @@ dependencies:
       - output_types: [requirements, pyproject]
         packages:
           - scikit-build-core[pyproject]>=0.10.0
+  test_dynamic_linking:
+    common:
+      - output_types: conda
+        packages:
+          - spdlog==1.14.1
+          - fmt==11.0.2
+          - cmake>=3.30.4
+          - ninja
+          - cxx-compiler

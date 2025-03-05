@@ -7,8 +7,6 @@ rapids-configure-conda-channels
 
 source rapids-configure-sccache
 
-source rapids-date-string
-
 export CMAKE_GENERATOR=Ninja
 
 rapids-print-env

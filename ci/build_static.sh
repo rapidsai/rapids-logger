@@ -3,8 +3,6 @@
 
 set -euo pipefail
 
-source rapids-date-string
-
 rapids-logger "Static cpp build"
 
 # Make sure we have an updated CMake
