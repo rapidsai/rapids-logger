@@ -12,6 +12,8 @@ source:
 
 build:
   number: ${{ GIT_DESCRIBE_NUMBER }}
+  dynamic_linking:
+    overlinking_behavior: "error"
   script: |
     cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX
     cmake --build build/
