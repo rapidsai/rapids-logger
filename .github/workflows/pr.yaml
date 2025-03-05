@@ -47,3 +47,11 @@ jobs:
       build_type: pull-request
       container_image: "rapidsai/ci-wheel:latest"
       run_script: "ci/build_static.sh"
+  dynamic-build:
+    needs: style
+    secrets: inherit
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.04
+    with:
+      build_type: pull-request
+      container_image: "rapidsai/ci-conda:latest"
+      run_script: "ci/build_dynamic.sh"
