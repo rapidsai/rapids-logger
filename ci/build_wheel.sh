@@ -6,7 +6,7 @@ set -euo pipefail
 package_name="rapids_logger"
 package_dir="python/rapids-logger"
 dist_dir="${package_dir}/dist"
-final_dir="${package_dir}/final_dist"
+final_dir="${RAPIDS_WHEEL_BLD_OUTPUT_DIR}"
 
 source rapids-configure-sccache
 

@@ -53,6 +53,9 @@ jobs:
       sha: ${{ inputs.sha }}
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
       script: ci/build_wheel.sh
+      wheel-name: rapids_logger
+      package-type: cpp
+      append-cuda-suffix: false
   wheel-publish-cpp:
     needs: wheel-cpp-build
     secrets: inherit
