@@ -5,6 +5,8 @@ This project has two primary goals:
 1. Ensure that projects wishing to provide their own logger may do so easily without needing to reimplement their own custom wrappers around spdlog.
 2. Ensure that custom logger implementations based on spdlog do not leak any spdlog (or fmt) symbols, allowing the safe coexistence of different projects in the same environment even if they use different versions of spdlog.
 
+> Note: There is an unrelated CI tool of the same name which is part of the [gha-tools](https://github.com/rapidsai/gha-tools) repository.
+
 `rapids-logger` is designed to be used via CMake.
 Its CMakeLists.txt defines a function `rapids_make_logger` that can be used to produce a project-specific logger class in a provided namespace.
 The resulting logger exposes spdlog-like functionality via the [PImpl idiom](https://en.cppreference.com/w/cpp/language/pimpl) to avoid exposing spdlog symbols publicly.
