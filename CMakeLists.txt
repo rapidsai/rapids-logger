@@ -19,6 +19,42 @@ include(rapids-cmake)
 include(rapids-cpm)
 include(rapids-export)
 
+function(get_fmt)
+  list(APPEND CMAKE_MESSAGE_CONTEXT "rapids.cpm.fmt")
+
+  set(to_install OFF)
+  if(INSTALL_EXPORT_SET IN_LIST ARGN)
+    set(to_install ON)
+  endif()
+
+  include("${rapids-cmake-dir}/cpm/detail/package_details.cmake")
+  rapids_cpm_package_details(fmt version repository tag shallow exclude)
+
+  include("${rapids-cmake-dir}/cpm/detail/generate_patch_command.cmake")
+  rapids_cpm_generate_patch_command(fmt ${version} patch_command build_patch_only)
+
+  include("${rapids-cmake-dir}/cpm/find.cmake")
+  rapids_cpm_find(fmt ${version} ${ARGN} ${build_patch_only}
+                  GLOBAL_TARGETS fmt::fmt fmt::fmt-header-only
+                  CPM_ARGS
+                  GIT_REPOSITORY ${repository}
+                  GIT_TAG ${tag}
+                  GIT_SHALLOW ${shallow} ${patch_command}
+                  EXCLUDE_FROM_ALL ${exclude}
+                  OPTIONS "FMT_INSTALL ${to_install}" "CMAKE_POSITION_INDEPENDENT_CODE ON")
+
+  include("${rapids-cmake-dir}/cpm/detail/display_patch_status.cmake")
+  rapids_cpm_display_patch_status(fmt)
+
+  # Propagate up variables that CPMFindPackage provide
+  set(fmt_SOURCE_DIR "${fmt_SOURCE_DIR}" PARENT_SCOPE)
+  set(fmt_BINARY_DIR "${fmt_BINARY_DIR}" PARENT_SCOPE)
+  set(fmt_ADDED "${fmt_ADDED}" PARENT_SCOPE)
+  set(fmt_VERSION ${version} PARENT_SCOPE)
+
+  # fmt creates the correct namespace aliases
+endfunction()
+
 function(get_spdlog)
   set(options)
   set(one_value FMT_OPTION BUILD_EXPORT_SET INSTALL_EXPORT_SET)
@@ -72,7 +108,7 @@ function(get_spdlog)
     # search beside it before looking globally.
     list(APPEND fmt_ROOT ${spdlog_ROOT})
 
-    rapids_cpm_fmt(${_RAPIDS_UNPARSED_ARGUMENTS})
+    get_fmt(${_RAPIDS_UNPARSED_ARGUMENTS})
   endif()
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
@@ -97,9 +133,6 @@ function(get_spdlog)
 
   # spdlog creates the correct namespace aliases
 endfunction()
-
-
-
 
 file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" _version)
 string(STRIP "${_version}" _version)
