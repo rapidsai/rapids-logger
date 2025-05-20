@@ -112,13 +112,13 @@ function(get_spdlog)
   endif()
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
-  rapids_cpm_find(spdlog ${version} ${_RAPIDS_UNPARSED_ARGUMENTS} ${build_patch_only}
+  rapids_cpm_find(spdlog 1.14.1 ${_RAPIDS_UNPARSED_ARGUMENTS}
                   GLOBAL_TARGETS spdlog::spdlog spdlog::spdlog_header_only
                   CPM_ARGS
-                  GIT_REPOSITORY ${repository}
-                  GIT_TAG ${tag}
-                  GIT_SHALLOW ${shallow} ${patch_command}
-                  EXCLUDE_FROM_ALL ${exclude}
+                  GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                  GIT_TAG v1.14.1
+                  GIT_SHALLOW ON
+                  EXCLUDE_FROM_ALL ON
                   OPTIONS "SPDLOG_INSTALL ${to_install}" "${spdlog_fmt_option}")
 
   include("${rapids-cmake-dir}/cpm/detail/display_patch_status.cmake")
@@ -185,16 +185,8 @@ set_target_properties(
 )
 
 # Get spdlog
-include(${rapids-cmake-dir}/cpm/spdlog.cmake)
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   set(CPM_DOWNLOAD_spdlog ON)
-  # The override file sets EXCLUDE_FROM_ALL to ON. There is no way to do that directly via
-  # rapids_cpm_spdlog right now because it explicitly passes in a value to the rapids_cpm_find call
-  # that will override the same version of the argument passed here (or at least, it's
-  # order-dependent which is selected so we're at the mercy of the rapids-cmake implementation). We
-  # should generalize the rapids_cpm_* functions to support this natively.
-  include(${rapids-cmake-dir}/cpm/package_override.cmake)
-  rapids_cpm_package_override(${CMAKE_CURRENT_LIST_DIR}/cmake/spdlog_override.cmake)
   get_spdlog(
     FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION} CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF"
                                            "SPDLOG_BUILD_SHARED OFF"
