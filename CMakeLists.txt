@@ -80,8 +80,6 @@ cmake_dependent_option(
   "Build and link to spdlog in a way that maximizes all symbol hiding" ON "BUILD_SHARED_LIBS" OFF
 )
 
-# TODO: For Spark-RAPIDS we will have to support building this as a static library. We may need some
-# additional testing to make sure that will work.
 add_library(rapids_logger src/logger.cpp)
 add_library(rapids_logger::rapids_logger ALIAS rapids_logger)
 target_include_directories(
@@ -92,7 +90,6 @@ set_target_properties(
   rapids_logger
   PROPERTIES BUILD_RPATH "\$ORIGIN"
              INSTALL_RPATH "\$ORIGIN"
-             # set target compile options
              CXX_STANDARD 20
              CXX_STANDARD_REQUIRED ON
              CXX_VISIBILITY_PRESET hidden
@@ -141,7 +138,6 @@ install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
         DESTINATION "${lib_dir}/cmake/rapids_logger"
 )
 
-# cmake-lint: disable=E1126
 file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/logger_macros.hpp.in"
      "${CMAKE_CURRENT_BINARY_DIR}/logger_macros.hpp.in"
 )
