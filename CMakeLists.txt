@@ -19,7 +19,7 @@ include(rapids-cmake)
 include(rapids-cpm)
 include(rapids-export)
 
-# Fetch spdlog
+# Get spdlog
 function(get_spdlog)
   set(options)
   set(one_value BUILD_EXPORT_SET INSTALL_EXPORT_SET)
@@ -44,14 +44,16 @@ function(get_spdlog)
   set(tag "v${version}")
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
-  rapids_cpm_find(spdlog "${version}" ${_RAPIDS_UNPARSED_ARGUMENTS}
-                  GLOBAL_TARGETS spdlog::spdlog spdlog::spdlog_header_only
-                  CPM_ARGS
-                  GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                  GIT_TAG "${tag}"
-                  GIT_SHALLOW ON
-                  EXCLUDE_FROM_ALL ON
-                  OPTIONS "SPDLOG_INSTALL ${to_install}" "SPDLOG_USE_STD_FORMAT ON")
+  rapids_cpm_find(
+    spdlog "${version}" ${_RAPIDS_UNPARSED_ARGUMENTS}
+    GLOBAL_TARGETS spdlog::spdlog spdlog::spdlog_header_only
+    CPM_ARGS
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG "${tag}"
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL ON
+    OPTIONS "SPDLOG_INSTALL ${to_install}" "SPDLOG_USE_STD_FORMAT ON"
+  )
 endfunction()
 
 file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" _version)
@@ -100,10 +102,7 @@ set_target_properties(
 # Get spdlog
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   set(CPM_DOWNLOAD_spdlog ON)
-  get_spdlog(
-    CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF"
-    "SPDLOG_BUILD_SHARED OFF"
-  )
+  get_spdlog(CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF" "SPDLOG_BUILD_SHARED OFF")
   set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
