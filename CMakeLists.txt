@@ -121,7 +121,7 @@ function(get_spdlog)
     GIT_TAG "v${version}"
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL ON
-    OPTIONS "SPDLOG_INSTALL ${to_install}" "${spdlog_fmt_option}"
+    OPTIONS "SPDLOG_INSTALL ${to_install}" "SPDLOG_USE_STD_FORMAT ON"
   )
 
   # Propagate up variables that CPMFindPackage provide
@@ -191,7 +191,7 @@ set_target_properties(
   PROPERTIES BUILD_RPATH "\$ORIGIN"
              INSTALL_RPATH "\$ORIGIN"
              # set target compile options
-             CXX_STANDARD 17
+             CXX_STANDARD 20
              CXX_STANDARD_REQUIRED ON
              CXX_VISIBILITY_PRESET hidden
              POSITION_INDEPENDENT_CODE ON
