@@ -19,6 +19,88 @@ include(rapids-cmake)
 include(rapids-cpm)
 include(rapids-export)
 
+function(get_spdlog)
+  set(options)
+  set(one_value FMT_OPTION BUILD_EXPORT_SET INSTALL_EXPORT_SET)
+  set(multi_value)
+  cmake_parse_arguments(_RAPIDS "${options}" "${one_value}" "${multi_value}" ${ARGN})
+
+  # Fix up _RAPIDS_UNPARSED_ARGUMENTS to have EXPORT_SETS as this is need for rapids_cpm_find. Also
+  # propagate the user provided build and install export sets.
+  if(_RAPIDS_INSTALL_EXPORT_SET)
+    list(APPEND _RAPIDS_UNPARSED_ARGUMENTS INSTALL_EXPORT_SET ${_RAPIDS_INSTALL_EXPORT_SET})
+  endif()
+  if(_RAPIDS_BUILD_EXPORT_SET)
+    list(APPEND _RAPIDS_UNPARSED_ARGUMENTS BUILD_EXPORT_SET ${_RAPIDS_BUILD_EXPORT_SET})
+  endif()
+
+  set(to_install OFF)
+  if(_RAPIDS_INSTALL_EXPORT_SET)
+    set(to_install ON)
+  endif()
+
+  include("${rapids-cmake-dir}/cpm/detail/package_details.cmake")
+  rapids_cpm_package_details(spdlog version repository tag shallow exclude)
+
+  include("${rapids-cmake-dir}/cpm/detail/generate_patch_command.cmake")
+  rapids_cpm_generate_patch_command(spdlog ${version} patch_command build_patch_only)
+
+  # If the option wasn't passed to the command, default to header only fmt
+  if(NOT _RAPIDS_FMT_OPTION)
+    set(_RAPIDS_FMT_OPTION "EXTERNAL_FMT_HO")
+  endif()
+
+  if(_RAPIDS_FMT_OPTION STREQUAL "BUNDLED")
+    set(spdlog_fmt_option "")
+  elseif(_RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT")
+    set(spdlog_fmt_option "SPDLOG_FMT_EXTERNAL ON")
+    set(spdlog_fmt_target fmt::fmt)
+  elseif(_RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT_HO")
+    set(spdlog_fmt_option "SPDLOG_FMT_EXTERNAL_HO ON")
+    set(spdlog_fmt_target fmt::fmt-header-only)
+  elseif(_RAPIDS_FMT_OPTION STREQUAL "STD_FORMAT")
+    set(spdlog_fmt_option "SPDLOG_USE_STD_FORMAT ON")
+  else()
+    message(FATAL_ERROR "Invalid option used for FMT_OPTION, got: ${_RAPIDS_FMT_OPTION}, expected one of: 'BUNDLED', 'EXTERNAL_FMT', 'EXTERNAL_FMT_HO', 'STD_FORMAT'"
+    )
+  endif()
+
+  if(_RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT" OR _RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT_HO")
+    include("${rapids-cmake-dir}/cpm/fmt.cmake")
+
+    # Using `spdlog_ROOT` needs to cause any internal find calls in `spdlog-config.cmake` to first
+    # search beside it before looking globally.
+    list(APPEND fmt_ROOT ${spdlog_ROOT})
+
+    rapids_cpm_fmt(${_RAPIDS_UNPARSED_ARGUMENTS})
+  endif()
+
+  include("${rapids-cmake-dir}/cpm/find.cmake")
+  rapids_cpm_find(spdlog ${version} ${_RAPIDS_UNPARSED_ARGUMENTS} ${build_patch_only}
+                  GLOBAL_TARGETS spdlog::spdlog spdlog::spdlog_header_only
+                  CPM_ARGS
+                  GIT_REPOSITORY ${repository}
+                  GIT_TAG ${tag}
+                  GIT_SHALLOW ${shallow} ${patch_command}
+                  EXCLUDE_FROM_ALL ${exclude}
+                  OPTIONS "SPDLOG_INSTALL ${to_install}" "${spdlog_fmt_option}")
+
+  include("${rapids-cmake-dir}/cpm/detail/display_patch_status.cmake")
+  rapids_cpm_display_patch_status(spdlog)
+
+  # Propagate up variables that CPMFindPackage provide
+  set(spdlog_SOURCE_DIR "${spdlog_SOURCE_DIR}" PARENT_SCOPE)
+  set(spdlog_BINARY_DIR "${spdlog_BINARY_DIR}" PARENT_SCOPE)
+  set(spdlog_ADDED "${spdlog_ADDED}" PARENT_SCOPE)
+  set(spdlog_VERSION ${version} PARENT_SCOPE)
+  set(spdlog_fmt_target ${spdlog_fmt_target} PARENT_SCOPE)
+
+  # spdlog creates the correct namespace aliases
+endfunction()
+
+
+
+
 file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" _version)
 string(STRIP "${_version}" _version)
 string(REGEX MATCH "[0-9]+\.[0-9]+\.[0-9]+" _version "${_version}")
@@ -80,14 +162,14 @@ if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   # should generalize the rapids_cpm_* functions to support this natively.
   include(${rapids-cmake-dir}/cpm/package_override.cmake)
   rapids_cpm_package_override(${CMAKE_CURRENT_LIST_DIR}/cmake/spdlog_override.cmake)
-  rapids_cpm_spdlog(
+  get_spdlog(
     FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION} CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF"
                                            "SPDLOG_BUILD_SHARED OFF"
   )
   set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
-  rapids_cpm_spdlog(
+  get_spdlog(
     FMT_OPTION ${RAPIDS_LOGGER_FMT_OPTION}
     BUILD_EXPORT_SET rapids-logger-exports
     INSTALL_EXPORT_SET
