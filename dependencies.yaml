@@ -15,11 +15,13 @@ files:
     output: none
     includes:
       - build_common
-      - spdlog_deps
+      - spdlog
+      - fmt
   test_static_library:
     output: none
     includes:
       - build_common
+      - fmt
 channels:
   - conda-forge
   - nodefaults
@@ -52,9 +54,13 @@ dependencies:
           - cmake>=3.30.4
           - ninja
           - cxx-compiler
-  spdlog_deps:
+  spdlog:
     common:
       - output_types: conda
         packages:
           - spdlog==1.14.1
+  fmt:
+    common:
+      - output_types: conda
+        packages:
           - fmt==11.0.2
