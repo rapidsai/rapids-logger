@@ -9,6 +9,7 @@ dist_dir="${package_dir}/dist"
 final_dir="${RAPIDS_WHEEL_BLD_OUTPUT_DIR}"
 
 source rapids-configure-sccache
+source rapids-init-pip
 
 rapids-generate-version > ./VERSION
 

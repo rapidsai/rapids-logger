@@ -49,7 +49,7 @@ jobs:
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
-      run_script: "ci/build_static.sh"
+      script: "ci/build_static.sh"
   dynamic-build:
     needs: style
     secrets: inherit
@@ -57,4 +57,4 @@ jobs:
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
-      run_script: "ci/build_dynamic.sh"
+      script: "ci/build_dynamic.sh"
