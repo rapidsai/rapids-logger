@@ -40,15 +40,16 @@ function(get_spdlog)
     set(to_install ON)
   endif()
 
-  set(spdlog_version 1.14.1)
+  set(version 1.14.1)
+  set(tag "v${version}")
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
   rapids_cpm_find(
-    spdlog "${spdlog_version}" ${_RAPIDS_UNPARSED_ARGUMENTS}
+    spdlog "${version}" ${_RAPIDS_UNPARSED_ARGUMENTS}
     GLOBAL_TARGETS spdlog::spdlog spdlog::spdlog_header_only
     CPM_ARGS
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG "v${spdlog_version}"
+    GIT_TAG "${tag}"
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL ON
     OPTIONS "SPDLOG_INSTALL ${to_install}" "SPDLOG_USE_STD_FORMAT ON"
@@ -137,7 +138,6 @@ install(FILES ${CMAKE_CURRENT_LIST_DIR}/cmake/create_logger_macros.cmake
         DESTINATION "${lib_dir}/cmake/rapids_logger"
 )
 
-# cmake-lint: disable=E1126
 file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/logger_macros.hpp.in"
      "${CMAKE_CURRENT_BINARY_DIR}/logger_macros.hpp.in"
 )
