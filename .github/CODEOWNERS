@@ -1,0 +1,26 @@
+# cpp code owners
+/src/                    @rapidsai/rapids-logger-cpp-codeowners
+/tests/                  @rapidsai/rapids-logger-cpp-codeowners
+
+# cmake code owners
+CMakeLists.txt           @rapidsai/rapids-logger-cmake-codeowners
+**/CMakeLists.txt        @rapidsai/rapids-logger-cmake-codeowners
+**/cmake/                @rapidsai/rapids-logger-cmake-codeowners
+*.cmake                  @rapidsai/rapids-logger-cmake-codeowners
+/cmake/                  @rapidsai/rapids-logger-cmake-codeowners
+/tests/                  @rapidsai/rapids-logger-cpp-codeowners
+
+# CI code owners
+# Includes the python directory because that is just the loading shim and the
+# build team is most familiar with that.
+/.github/                @rapidsai/ci-codeowners
+/ci/                     @rapidsai/ci-codeowners
+/python/                 @rapidsai/ci-codeowners
+
+# packaging code owners
+/.pre-commit-config.yaml @rapidsai/packaging-codeowners
+/conda/                  @rapidsai/packaging-codeowners
+/dependencies.yaml       @rapidsai/packaging-codeowners
+/build.sh                @rapidsai/packaging-codeowners
+pyproject.toml           @rapidsai/packaging-codeowners
+**/pyproject.toml        @rapidsai/packaging-codeowners
