@@ -16,10 +16,12 @@ files:
     includes:
       - build_common
       - spdlog
+      - fmt
   test_static_library:
     output: none
     includes:
       - build_common
+      - fmt
 channels:
   - conda-forge
   - nodefaults
@@ -56,4 +58,9 @@ dependencies:
     common:
       - output_types: conda
         packages:
-          - spdlog==1.15.3
+          - spdlog==1.14.1
+  fmt:
+    common:
+      - output_types: conda
+        packages:
+          - fmt==11.0.2
