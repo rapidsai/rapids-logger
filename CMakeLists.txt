@@ -119,7 +119,7 @@ function(get_spdlog)
                   GIT_TAG v1.14.1
                   GIT_SHALLOW ON
                   EXCLUDE_FROM_ALL ON
-                  OPTIONS "SPDLOG_INSTALL ${to_install}" "SPDLOG_USE_STD_FORMAT ON")
+                  OPTIONS "SPDLOG_INSTALL ${to_install}" "${spdlog_fmt_option}")
 
   include("${rapids-cmake-dir}/cpm/detail/display_patch_status.cmake")
   rapids_cpm_display_patch_status(spdlog)
@@ -178,7 +178,7 @@ set_target_properties(
   PROPERTIES BUILD_RPATH "\$ORIGIN"
              INSTALL_RPATH "\$ORIGIN"
              # set target compile options
-             CXX_STANDARD 20
+             CXX_STANDARD 17
              CXX_STANDARD_REQUIRED ON
              CXX_VISIBILITY_PRESET hidden
              POSITION_INDEPENDENT_CODE ON
