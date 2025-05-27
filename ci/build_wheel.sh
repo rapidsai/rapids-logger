@@ -33,5 +33,3 @@ WHEEL_EXPORT_DIR="$(mktemp -d)"
 unzip -d "${WHEEL_EXPORT_DIR}" "${final_dir}/*"
 LOGGER_LIBRARY=$(find "${WHEEL_EXPORT_DIR}" -type f -name 'librapids_logger.so')
 ./ci/check_symbols.sh "${LOGGER_LIBRARY}"
-
-RAPIDS_PY_WHEEL_NAME="${package_name}" rapids-upload-wheels-to-s3 cpp "${final_dir}"
