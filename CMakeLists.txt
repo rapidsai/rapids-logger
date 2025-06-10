@@ -103,14 +103,8 @@ if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
   get_spdlog(
-    BUILD_EXPORT_SET
-    rapids-logger-exports
-    INSTALL_EXPORT_SET
-    rapids-logger-exports
-    CPM_ARGS
-    OPTIONS
-    "BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS}"
-    "SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS}"
+    BUILD_EXPORT_SET rapids-logger-exports INSTALL_EXPORT_SET rapids-logger-exports CPM_ARGS
+    OPTIONS "BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS}" "SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS}"
   )
   if(spdlog_ADDED)
     set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
