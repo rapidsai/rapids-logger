@@ -14,12 +14,10 @@ readelf --dyn-syms --wide "${LIBRARY}" \
     | c++filt \
     > "${symbol_file}"
 
-for lib in fmt spdlog; do
-    echo "Checking for '${lib}' symbols..."
-    if grep -E "${lib}\:\:" "${symbol_file}"; then
-        echo "ERROR: Found some exported symbols in ${LIBRARY} matching the pattern ${lib}::."
-        exit 1
-    fi
-done
+echo "Checking for spdlog symbols..."
+if grep -E "spdlog\:\:" "${symbol_file}"; then
+    echo "ERROR: Found some exported symbols in ${LIBRARY} matching the pattern spdlog::."
+    exit 1
+fi
 
 echo "No symbol visibility issues found in ${LIBRARY}"

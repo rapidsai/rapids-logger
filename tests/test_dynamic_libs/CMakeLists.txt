@@ -20,13 +20,6 @@ project(
   LANGUAGES CXX
 )
 
-# We must preempt the fmt find because rapids-cmake contains patches for fmt that always trigger
-# downloading and we cannot get rid of those with an override file without also triggering a
-# download because of how rapids-cpm decides when to download.
-find_package(fmt 11.0.2 REQUIRED)
-set_target_properties(fmt::fmt PROPERTIES IMPORTED_GLOBAL TRUE)
-set_target_properties(fmt::fmt-header-only PROPERTIES IMPORTED_GLOBAL TRUE)
-
 include(FetchContent)
 
 # Force test to use the copy of rapids-logger in the source tree.
@@ -38,12 +31,11 @@ FetchContent_Declare(
   GIT_TAG main
 )
 
-# The purpose of this test is to verify that we can link against preexisting spdlog and fmt shared
+# The purpose of this test is to verify that we can link against preexisting spdlog shared
 # libraries, so we must set the appropriate options here.
 set(BUILD_SHARED_LIBS ON)
 set(BUILD_TESTS OFF)
 set(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS OFF)
-set(RAPIDS_LOGGER_FMT_OPTION "EXTERNAL_FMT")
 
 FetchContent_MakeAvailable(rapids_logger)
 

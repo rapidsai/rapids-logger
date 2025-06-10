@@ -7,7 +7,7 @@ set -euo pipefail
 
 export CMAKE_GENERATOR=Ninja
 
-rapids-logger "Build a rapids-logger consumer that builds rapids-logger and dynamically links against spdlog and fmt"
+rapids-logger "Build a rapids-logger consumer that builds rapids-logger and dynamically links against spdlog"
 
 ENV_YAML_DIR="$(mktemp -d)"
 ENV_FILE="${ENV_YAML_DIR}/env.yaml"
@@ -25,12 +25,10 @@ pushd tests/test_dynamic_libs
 cmake -S . -B build/
 cmake --build build/
 
-# Check that ldd on build/LoggerTest includes spdlog and fmt and that neither
+# Check that ldd on build/LoggerTest includes spdlog and that neither
 # library was cloned into build/_deps
 shopt -s nullglob
-for lib in spdlog fmt; do
-  ldd build/LoggerTest | grep -q "${lib}" || (echo "${lib} not found in ldd output" && exit 1)
-  dirs=(build/_deps/"${lib}"*)
-  (( ${#dirs[@]} > 0 )) && (echo "${lib} found in build/_deps" && exit 1)
-done
-echo "LoggerTest linked against spdlog and fmt as expected"
+ldd build/LoggerTest | grep -q spdlog || (echo "spdlog not found in ldd output" && exit 1)
+dirs=(build/_deps/spdlog*)
+(( ${#dirs[@]} > 0 )) && (echo "spdlog found in build/_deps" && exit 1)
+echo "LoggerTest linked against spdlog as expected"

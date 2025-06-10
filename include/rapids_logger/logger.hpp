@@ -181,8 +181,8 @@ class RAPIDS_LOGGER_EXPORT logger {
   /**
    * @brief Format and log a message at the specified level.
    *
-   * This function performs printf-style formatting to avoid the need for fmt
-   * or spdlog's own templated APIs (which would require exposing spdlog
+   * This function performs printf-style formatting to avoid the need for
+   * spdlog's own templated APIs (which would require exposing spdlog
    * symbols publicly) and then invokes the base implementation with the
    * preformatted string.
    *
