@@ -56,4 +56,4 @@ dependencies:
     common:
       - output_types: conda
         packages:
-          - spdlog==1.15.3
+          - spdlog==1.14.1
