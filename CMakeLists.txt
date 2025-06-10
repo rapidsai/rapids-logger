@@ -40,7 +40,7 @@ function(get_spdlog)
     set(to_install ON)
   endif()
 
-  set(spdlog_version 1.15.3)
+  set(spdlog_version 1.14.1)
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
   rapids_cpm_find(
