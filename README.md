@@ -3,7 +3,7 @@
 The `rapids-logger` project defines an easy way to produce a project-specific logger using the excellent [spdlog](https://github.com/gabime/spdlog) package.
 This project has two primary goals:
 1. Ensure that projects wishing to provide their own logger may do so easily without needing to reimplement their own custom wrappers around spdlog.
-2. Ensure that custom logger implementations based on spdlog do not leak any spdlog symbols, allowing the safe coexistence of different projects in the same environment even if they use different versions of spdlog.
+2. Ensure that custom logger implementations based on spdlog do not leak any spdlog (or fmt) symbols, allowing the safe coexistence of different projects in the same environment even if they use different versions of spdlog.
 
 > Note: There is an unrelated CI tool of the same name which is part of the [gha-tools](https://github.com/rapidsai/gha-tools) repository.
 
