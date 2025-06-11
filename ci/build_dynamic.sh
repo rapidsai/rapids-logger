@@ -22,7 +22,7 @@ set -u
 
 pushd tests/test_dynamic_libs
 
-cmake -S . -B build/
+cmake -S . -B build/ -DRAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS=OFF
 cmake --build build/
 
 # Check that ldd on build/LoggerTest includes spdlog and fmt and that neither
