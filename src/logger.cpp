@@ -164,7 +164,7 @@ class callback_sink : public spdlog::sinks::base_sink<Mutex> {
   {
     spdlog::memory_buf_t formatted;
     spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
-    std::string msg_string = std::format("{}", formatted);
+    std::string msg_string = std::string(formatted.data(), formatted.size());
 
     if (_callback) {
       _callback(static_cast<int>(msg.level), msg_string.c_str());
