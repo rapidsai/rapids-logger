@@ -27,14 +27,14 @@ jobs:
         run: ci/check_style.sh
   conda-cpp-build:
     needs: style
-    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@branch-25.10
     with:
       build_type: pull-request
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
       script: ci/build_conda.sh
   wheel-cpp-build:
     needs: style
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@branch-25.10
     with:
       build_type: pull-request
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
@@ -45,7 +45,7 @@ jobs:
   static-build:
     needs: style
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.10
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
@@ -53,7 +53,7 @@ jobs:
   dynamic-build:
     needs: style
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.10
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"

@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   conda-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -38,14 +38,14 @@ jobs:
   upload-conda:
     needs: conda-cpp-build
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/conda-upload-packages.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/conda-upload-packages.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
       date: ${{ inputs.date }}
       sha: ${{ inputs.sha }}
   wheel-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -59,7 +59,7 @@ jobs:
   wheel-publish-cpp:
     needs: wheel-cpp-build
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-publish.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-publish.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -69,7 +69,7 @@ jobs:
       package-type: cpp
   static-build:
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -79,7 +79,7 @@ jobs:
       script: "ci/build_static.sh"
   dynamic-build:
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.08
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@branch-25.10
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
