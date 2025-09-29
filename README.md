@@ -28,3 +28,12 @@ Users can then opt in to more verbose logging at runtime using `default_logger()
 
 Each project is endowed with its own definition of levels, so different projects in the same environment may be safely configured independently of each other and of spdlog.
 Each project is also given a `default_logger` function that produces a global logger that may be used anywhere, but projects may also freely instantiate additional loggers as needed.
+
+# Making Releases
+
+To make a release of rapids-logger, follow these steps:
+1. Create a new branch off of `main` named `release/vx.y` where `x.y` is the new version number.
+2. Update the version number in `VERSION`
+3. Open a PR to `main` and get it reviewed and merged.
+4. Create a new tag `vx.y` on the commit that was merged to `main`.
+5. Push the tag to GitHub.
