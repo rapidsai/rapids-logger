@@ -28,3 +28,14 @@ Users can then opt in to more verbose logging at runtime using `default_logger()
 
 Each project is endowed with its own definition of levels, so different projects in the same environment may be safely configured independently of each other and of spdlog.
 Each project is also given a `default_logger` function that produces a global logger that may be used anywhere, but projects may also freely instantiate additional loggers as needed.
+
+# Making Releases
+
+To make a release of rapids-logger, follow these steps:
+1. Create a new branch off of `main` named `release/vX.Y` where `X.Y` is the new version number. **This branch must be on the main `rapidsai/rapids-logger` repo, not a fork.**
+2. Create and merge a PR to the new branch updating the three-part version number in `VERSION`. Its contents should be `X.Y.Z`. Note that we do not create a separate branch for each patch version since patch releases are made directly on top of a preexisting release branch (whereas a minor release might need to maintain a long-running branch for future patch releases).
+3. Make any other commits necessary for the release on this branch.
+4. Open a PR from `release/vX.Y` to `main` and get it reviewed and merged.
+5. Tag this new commit on main with `vX.{Y+1}a`. This alpha tag now sets the starting point of the next release.
+6. Create a new tag `vX.Y` on the HEAD of `release/vX.Y` to mark the release.
+7. Push both tags with `git push --tags`.
