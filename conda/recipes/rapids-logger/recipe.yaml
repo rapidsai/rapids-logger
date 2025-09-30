@@ -52,6 +52,7 @@ tests:
 
     files:
       source:
+        - RAPIDS_VERSION
         - VERSION
         - cmake/
         - rapids_config.cmake
