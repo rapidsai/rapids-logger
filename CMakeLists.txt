@@ -102,12 +102,6 @@ function(get_spdlog)
   endif()
 
   if(_RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT" OR _RAPIDS_FMT_OPTION STREQUAL "EXTERNAL_FMT_HO")
-    include("${rapids-cmake-dir}/cpm/fmt.cmake")
-
-    # Using `spdlog_ROOT` needs to cause any internal find calls in `spdlog-config.cmake` to first
-    # search beside it before looking globally.
-    list(APPEND fmt_ROOT ${spdlog_ROOT})
-
     get_fmt(${_RAPIDS_UNPARSED_ARGUMENTS})
   endif()
 
