@@ -31,6 +31,7 @@ Each project is also given a `default_logger` function that produces a global lo
 
 # Making Releases
 
+## Making major or minor releases
 To make a release of rapids-logger, follow these steps:
 1. Create a new branch off of `main` named `release/vX.Y` where `X.Y` is the new version number. **This branch must be on the main `rapidsai/rapids-logger` repo, not a fork.**
 2. Create and merge a PR to the new branch updating the three-part version number in `VERSION`. Its contents should be `X.Y.Z`. Note that we do not create a separate branch for each patch version since patch releases are made directly on top of a preexisting release branch (whereas a minor release might need to maintain a long-running branch for future patch releases).
@@ -39,3 +40,10 @@ To make a release of rapids-logger, follow these steps:
 5. Tag this new commit on main with `vX.{Y+1}a`. This alpha tag now sets the starting point of the next release.
 6. Create a new tag `vX.Y` on the HEAD of `release/vX.Y` to mark the release.
 7. Push both tags with `git push --tags`.
+
+## Making patch Releases
+To make a patch release of rapids-logger, follow these steps:
+1. Create PRs to the appropriate release branch `release/vX.Y` where `X.Y` is the version number of the release branch containing any fixes needed for the patch release. Get these PRs reviewed and merged.
+2. Create and merge a PR to update the patch version in `VERSION` to `X.Y.Z` where `Z` is the new patch version.
+3. Tag the HEAD of the release branch with `vX.Y.Z` to mark the release.
+4. Push the new tag with `git push --tags`.
