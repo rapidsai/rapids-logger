@@ -26,5 +26,4 @@ function sed_runner() {
 for FILE in .github/workflows/*.yaml; do
   sed_runner "/shared-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
 done
-sed_runner "/^RAPIDS_VERSION_MAJOR_MINOR=/ s/=.*/=\"${NEXT_SHORT_TAG}\"/" ci/check_style.sh
-sed_runner "s/set(_rapids_version [0-9\.]*)/set\(_rapids_version ${NEXT_FULL_TAG}\)/" rapids_config.cmake
+sed_runner "s/[0-9\.]*/${NEXT_FULL_TAG}/" RAPIDS_VERSION
