@@ -15,6 +15,11 @@ sccache --zero-stats
 
 mamba install -y rattler-build
 
-rattler-build build --recipe conda/recipes/rapids-logger --output-dir ${RAPIDS_CONDA_BLD_OUTPUT_DIR}
+source rapids-rattler-channel-string
+
+rattler-build build                      \
+  --recipe conda/recipes/rapids-logger   \
+  "${RATTLER_ARGS[@]}"                   \
+  "${RATTLER_CHANNELS[@]}"
 
 sccache --show-adv-stats
