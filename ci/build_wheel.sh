@@ -11,8 +11,6 @@ final_dir="${RAPIDS_WHEEL_BLD_OUTPUT_DIR}"
 source rapids-configure-sccache
 source rapids-init-pip
 
-rapids-generate-version > ./VERSION
-
 rapids-logger "Building '${package_name}' wheel"
 sccache --zero-stats
 python -m pip wheel \
