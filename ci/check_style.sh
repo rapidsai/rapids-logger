@@ -16,7 +16,10 @@ rapids-dependency-file-generator \
 rapids-mamba-retry env create --yes -f "${ENV_YAML_DIR}/env.yaml" -n checks
 conda activate checks
 
-RAPIDS_VERSION_MAJOR_MINOR="25.10"
+# read RAPIDS_VERSION_MAJOR_MINOR from the RAPIDS_VERSION file. That file
+# contains three segments separated by dots, we need the first two
+# segments only.
+RAPIDS_VERSION_MAJOR_MINOR=$(cut -d. -f1,2 RAPIDS_VERSION)
 FORMAT_FILE_URL="https://raw.githubusercontent.com/rapidsai/rapids-cmake/branch-${RAPIDS_VERSION_MAJOR_MINOR}/cmake-format-rapids-cmake.json"
 export RAPIDS_CMAKE_FORMAT_FILE=/tmp/rapids_cmake_ci/cmake-formats-rapids-cmake.json
 mkdir -p "$(dirname ${RAPIDS_CMAKE_FORMAT_FILE})"
