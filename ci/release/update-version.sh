@@ -26,4 +26,4 @@ function sed_runner() {
 for FILE in .github/workflows/*.yaml; do
   sed_runner "/shared-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
 done
-sed_runner "s/[0-9\.]*/${NEXT_FULL_TAG}/" RAPIDS_VERSION
+echo "${NEXT_FULL_TAG}" > RAPIDS_VERSION
