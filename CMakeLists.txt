@@ -22,8 +22,10 @@ include(rapids-export)
 # Fetch fmt
 function(get_fmt)
   set(to_install OFF)
+  set(exclude_from_all ON)
   if(INSTALL_EXPORT_SET IN_LIST ARGN)
     set(to_install ON)
+    set(exclude_from_all OFF)
   endif()
 
   include("${rapids-cmake-dir}/cpm/find.cmake")
@@ -35,7 +37,7 @@ function(get_fmt)
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
     GIT_TAG "${version}"
     GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL ON
+    EXCLUDE_FROM_ALL ${exclude_from_all}
     OPTIONS "FMT_INSTALL ${to_install}" "CMAKE_POSITION_INDEPENDENT_CODE ON"
   )
 
@@ -75,8 +77,10 @@ function(get_spdlog)
   endif()
 
   set(to_install OFF)
+  set(exclude_from_all ON)
   if(_RAPIDS_INSTALL_EXPORT_SET)
     set(to_install ON)
+    set(exclude_from_all OFF)
   endif()
 
   # If the option wasn't passed to the command, default to header only fmt
@@ -114,7 +118,7 @@ function(get_spdlog)
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
     GIT_TAG "v${version}"
     GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL ON
+    EXCLUDE_FROM_ALL ${exclude_from_all}
     OPTIONS "SPDLOG_INSTALL ${to_install}" "${spdlog_fmt_option}"
   )
 
