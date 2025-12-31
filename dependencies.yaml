@@ -40,8 +40,8 @@ dependencies:
     common:
       - output_types: [conda, requirements, pyproject]
         packages:
-          - cmake>=3.26.4,!=3.30.0
-          - ninja
+          - &cmake cmake>=3.26.4,!=3.30.0
+          - &ninja ninja
       - output_types: conda
         packages:
           - scikit-build-core>=0.11.0
@@ -52,8 +52,8 @@ dependencies:
     common:
       - output_types: conda
         packages:
-          - cmake>=3.30.4
-          - ninja
+          - *cmake
+          - *ninja
           - cxx-compiler
   spdlog:
     common:
