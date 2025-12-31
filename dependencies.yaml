@@ -44,10 +44,10 @@ dependencies:
           - ninja
       - output_types: conda
         packages:
-          - scikit-build-core>=0.10.0
+          - scikit-build-core>=0.11.0
       - output_types: [requirements, pyproject]
         packages:
-          - scikit-build-core[pyproject]>=0.10.0
+          - scikit-build-core[pyproject]>=0.11.0
   build_common:
     common:
       - output_types: conda
