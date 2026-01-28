@@ -10,6 +10,8 @@ dist_dir="${package_dir}/dist"
 final_dir="${RAPIDS_WHEEL_BLD_OUTPUT_DIR}"
 
 source rapids-configure-sccache
+RAPIDS_INIT_PIP_REMOVE_NVIDIA_INDEX="true"
+export RAPIDS_INIT_PIP_REMOVE_NVIDIA_INDEX
 source rapids-init-pip
 
 rapids-logger "Building '${package_name}' wheel"
@@ -34,6 +36,8 @@ mkdir -p "${final_dir}"
 python -m auditwheel repair \
     -w "${final_dir}" \
     "${dist_dir}/"*
+
+./ci/validate_wheel.sh "${package_dir}" "${final_dir}"
 
 # Check that no undefined symbols are present in the shared library
 WHEEL_EXPORT_DIR="$(mktemp -d)"
