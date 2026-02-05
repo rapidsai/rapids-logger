@@ -73,7 +73,7 @@ repos:
         args: ["--severity=warning"]
         files: ^ci/
   - repo: https://github.com/rapidsai/pre-commit-hooks
-    rev: v1.3.3
+    rev: v1.4.3
     hooks:
       - id: verify-copyright
         args: [--fix, --spdx]
@@ -94,3 +94,4 @@ repos:
         exclude: |
           (?x)
             ^pyproject[.]toml$
+      - id: verify-hardcoded-version
