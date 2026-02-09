@@ -69,10 +69,10 @@ echo "Updating RAPIDS versions to $NEXT_FULL_TAG"
 # Set branch references based on RUN_CONTEXT
 if [[ "${RUN_CONTEXT}" == "main" ]]; then
     RAPIDS_BRANCH_NAME="main"
-    echo "Preparing development branch update $CURRENT_TAG => $NEXT_FULL_TAG (targeting main branch)"
+    echo "Preparing development branch update: $NEXT_FULL_TAG (targeting main branch)"
 elif [[ "${RUN_CONTEXT}" == "release" ]]; then
     RAPIDS_BRANCH_NAME="release/${NEXT_SHORT_TAG}"
-    echo "Preparing release branch update $CURRENT_TAG => $NEXT_FULL_TAG (targeting release/${NEXT_SHORT_TAG} branch)"
+    echo "Preparing release branch update: $NEXT_FULL_TAG (targeting release/${NEXT_SHORT_TAG} branch)"
 fi
 
 # Inplace sed replace; workaround for Linux and Mac
@@ -83,7 +83,10 @@ function sed_runner() {
 # Update RAPIDS_BRANCH
 echo "${RAPIDS_BRANCH_NAME}" > ./RAPIDS_BRANCH
 
+# Update RAPIDS_VERSION
+echo "${NEXT_FULL_TAG}" > ./RAPIDS_VERSION
+
 # CI files
-for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
+for FILE in .github/workflows/*.yaml; do
   sed_runner "/shared-workflows/ s|@.*|@${RAPIDS_BRANCH_NAME}|g" "${FILE}"
 done
