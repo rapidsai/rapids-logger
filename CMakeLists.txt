@@ -69,8 +69,21 @@ rapids_cmake_build_type(Release)
 
 rapids_cpm_init()
 
-option(BUILD_TESTS "Configure CMake to build tests" ON)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+# Avoid overriding previously set BUILD_SHARED_LIBS when it is a cache variable. If it is not in the
+# cache, then set it to ON which is the default for rapids-logger, but use a non-cache variable to
+# avoid polluting the cache for subsequent calls to find other dependencies that might also use
+# BUILD_SHARED_LIBS. Note that this does potentially lead to odd ordering behaviors particularly on
+# reconfiguration, so consumers will have to set BUILD_SHARED_LIBS appropriately before configuring
+# rapids-logger as a subproject.
+
+# cmake-lint: disable=W0106
+if(NOT DEFINED CACHE{BUILD_SHARED_LIBS})
+  if(PROJECT_IS_TOP_LEVEL)
+    option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+  else()
+    set(BUILD_SHARED_LIBS ON)
+  endif()
+endif()
 
 include(CMakeDependentOption)
 # We cannot hide all spdlog symbols if we are building a static library.
