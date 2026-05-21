@@ -1,14 +1,12 @@
 name: pr
-
 on:
   push:
     branches:
       - "pull-request/[0-9]+"
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
+permissions: {}
 jobs:
   style:
     runs-on: ubuntu-latest
@@ -33,6 +31,12 @@ jobs:
       build_type: pull-request
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
       script: ci/build_conda.sh
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   wheel-cpp-build:
     needs: style
     uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@main
@@ -43,6 +47,12 @@ jobs:
       package-name: rapids_logger
       package-type: cpp
       append-cuda-suffix: false
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   static-build:
     needs: style
     secrets: inherit
@@ -51,6 +61,12 @@ jobs:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_static.sh"
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   dynamic-build:
     needs: style
     secrets: inherit
@@ -59,3 +75,9 @@ jobs:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_dynamic.sh"
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
