@@ -55,7 +55,7 @@ jobs:
       pull-requests: read
   static-build:
     needs: style
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@main
     with:
       build_type: pull-request
@@ -69,7 +69,7 @@ jobs:
       pull-requests: read
   dynamic-build:
     needs: style
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@main
     with:
       build_type: pull-request
