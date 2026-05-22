@@ -1,25 +1,24 @@
 name: pr
-
 on:
   push:
     branches:
       - "pull-request/[0-9]+"
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
+permissions: {}
 jobs:
   style:
     runs-on: ubuntu-latest
     container:
-      image: rapidsai/ci-conda:latest
+      image: rapidsai/ci-conda:latest # zizmor: ignore[unpinned-images]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
-      - uses: actions/cache@v4
+          persist-credentials: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-0|${{ hashFiles('.pre-commit-config.yaml') }}
@@ -32,6 +31,12 @@ jobs:
       build_type: pull-request
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
       script: ci/build_conda.sh
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   wheel-cpp-build:
     needs: style
     uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@main
@@ -42,19 +47,37 @@ jobs:
       package-name: rapids_logger
       package-type: cpp
       append-cuda-suffix: false
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   static-build:
     needs: style
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@main
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_static.sh"
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
   dynamic-build:
     needs: style
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@main
     with:
       build_type: pull-request
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_dynamic.sh"
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read

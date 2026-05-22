@@ -95,3 +95,7 @@ repos:
           (?x)
             ^pyproject[.]toml$
       - id: verify-hardcoded-version
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.24.1
+    hooks:
+      - id: zizmor
