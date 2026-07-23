@@ -84,6 +84,7 @@ jobs:
       sha: ${{ inputs.sha }}
       date: ${{ inputs.date }}
       package-name: rapids_logger
+      publish_to_pypi: true
       package-type: cpp
     permissions:
       actions: read
