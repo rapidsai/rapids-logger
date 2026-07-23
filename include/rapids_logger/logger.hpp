@@ -13,7 +13,11 @@
 #include <type_traits>
 #include <vector>
 
-#define RAPIDS_LOGGER_EXPORT __attribute__((visibility("default")))
+#ifdef _MSC_VER
+  #define RAPIDS_LOGGER_EXPORT __declspec(dllexport)
+#else
+  #define RAPIDS_LOGGER_EXPORT __attribute__((visibility("default")))
+#endif
 
 namespace rapids_logger {
 
