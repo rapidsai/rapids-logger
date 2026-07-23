@@ -48,6 +48,7 @@ jobs:
       branch: ${{ inputs.branch }}
       date: ${{ inputs.date }}
       sha: ${{ inputs.sha }}
+      dual_publish: true
     permissions:
       actions: read
       contents: read
