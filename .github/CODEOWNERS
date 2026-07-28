@@ -13,9 +13,10 @@ CMakeLists.txt           @rapidsai/rapids-logger-cmake-codeowners
 # CI code owners
 # Includes the python directory because that is just the loading shim and the
 # build team is most familiar with that.
-/.github/                @rapidsai/ci-codeowners
 /ci/                     @rapidsai/ci-codeowners
 /python/                 @rapidsai/ci-codeowners
+/.github/                @rapidsai/ci-codeowners
+/.yamllint.yaml          @rapidsai/ci-codeowners
 
 # packaging code owners
 /.pre-commit-config.yaml @rapidsai/packaging-codeowners
