@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2024, NVIDIA CORPORATION.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,11 @@
 #include <type_traits>
 #include <vector>
 
+#ifdef _MSC_VER
+#define RAPIDS_LOGGER_EXPORT __declspec(dllexport)
+#else
 #define RAPIDS_LOGGER_EXPORT __attribute__((visibility("default")))
+#endif
 
 namespace rapids_logger {
 
