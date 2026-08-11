@@ -1,11 +1,11 @@
 # =============================================================================
 # cmake-format: off
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025, NVIDIA CORPORATION.
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026, NVIDIA CORPORATION.
 # SPDX-License-Identifier: Apache-2.0
 # cmake-format: on
 # =============================================================================
 
-cmake_minimum_required(VERSION 3.30.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0 FATAL_ERROR)
 
 include(rapids_config.cmake)
 include(rapids-cmake)
@@ -69,8 +69,21 @@ rapids_cmake_build_type(Release)
 
 rapids_cpm_init()
 
-option(BUILD_TESTS "Configure CMake to build tests" ON)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+# Avoid overriding previously set BUILD_SHARED_LIBS when it is a cache variable. If it is not in the
+# cache, then set it to ON which is the default for rapids-logger, but use a non-cache variable to
+# avoid polluting the cache for subsequent calls to find other dependencies that might also use
+# BUILD_SHARED_LIBS. Note that this does potentially lead to odd ordering behaviors particularly on
+# reconfiguration, so consumers will have to set BUILD_SHARED_LIBS appropriately before configuring
+# rapids-logger as a subproject.
+
+# cmake-lint: disable=W0106
+if(NOT DEFINED CACHE{BUILD_SHARED_LIBS})
+  if(PROJECT_IS_TOP_LEVEL)
+    option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+  else()
+    set(BUILD_SHARED_LIBS ON)
+  endif()
+endif()
 
 include(CMakeDependentOption)
 # We cannot hide all spdlog symbols if we are building a static library.
@@ -99,16 +112,16 @@ set_target_properties(
 if(RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS)
   set(CPM_DOWNLOAD_spdlog ON)
   get_spdlog(CPM_ARGS OPTIONS "BUILD_SHARED_LIBS OFF" "SPDLOG_BUILD_SHARED OFF")
-  set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
   target_link_options(rapids_logger PRIVATE "LINKER:--exclude-libs,libspdlog")
 else()
   get_spdlog(
     BUILD_EXPORT_SET rapids-logger-exports INSTALL_EXPORT_SET rapids-logger-exports CPM_ARGS
     OPTIONS "BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS}" "SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS}"
   )
-  if(spdlog_ADDED)
-    set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
-  endif()
+endif()
+
+if(TARGET spdlog)
+  set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 target_link_libraries(rapids_logger PRIVATE spdlog::spdlog)
 

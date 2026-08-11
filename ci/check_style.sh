@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-FileCopyrightText: Copyright (c) 2025, NVIDIA CORPORATION.
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026, NVIDIA CORPORATION.
 # SPDX-License-Identifier: Apache-2.0
 
 set -euo pipefail
@@ -17,11 +17,8 @@ rapids-dependency-file-generator \
 rapids-mamba-retry env create --yes -f "${ENV_YAML_DIR}/env.yaml" -n checks
 conda activate checks
 
-# read RAPIDS_VERSION_MAJOR_MINOR from the RAPIDS_VERSION file. That file
-# contains three segments separated by dots, we need the first two
-# segments only.
-RAPIDS_VERSION_MAJOR_MINOR=$(cut -d. -f1,2 RAPIDS_VERSION)
-FORMAT_FILE_URL="https://raw.githubusercontent.com/rapidsai/rapids-cmake/branch-${RAPIDS_VERSION_MAJOR_MINOR}/cmake-format-rapids-cmake.json"
+RAPIDS_BRANCH=$(cat ./RAPIDS_BRANCH)
+FORMAT_FILE_URL="https://raw.githubusercontent.com/rapidsai/rapids-cmake/${RAPIDS_BRANCH}/cmake-format-rapids-cmake.json"
 export RAPIDS_CMAKE_FORMAT_FILE=/tmp/rapids_cmake_ci/cmake-formats-rapids-cmake.json
 mkdir -p "$(dirname ${RAPIDS_CMAKE_FORMAT_FILE})"
 wget -O ${RAPIDS_CMAKE_FORMAT_FILE} ${FORMAT_FILE_URL}
