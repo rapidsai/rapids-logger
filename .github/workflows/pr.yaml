@@ -8,6 +8,16 @@ concurrency:
   cancel-in-progress: true
 permissions: {}
 jobs:
+  pr-builder:
+    needs:
+      - style
+      - conda-cpp-build
+      - dynamic-build
+      - static-build
+      - wheel-cpp-build
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    permissions:
+      contents: read
   style:
     runs-on: ubuntu-latest
     container:
