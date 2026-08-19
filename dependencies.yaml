@@ -52,9 +52,10 @@ dependencies:
     common:
       - output_types: conda
         packages:
+          - binutils
           - *cmake
-          - *ninja
           - cxx-compiler
+          - *ninja
   spdlog:
     common:
       - output_types: conda
