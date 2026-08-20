@@ -1,6 +1,6 @@
 # =============================================================================
 # cmake-format: off
-# SPDX-FileCopyrightText: Copyright (c) 2024-2026, NVIDIA CORPORATION.
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 # cmake-format: on
 # =============================================================================
@@ -91,6 +91,9 @@ cmake_dependent_option(
   RAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS
   "Build and link to spdlog in a way that maximizes all symbol hiding" ON "BUILD_SHARED_LIBS" OFF
 )
+
+# allow finding dependencies in a conda environment if one is active
+rapids_cmake_support_conda_env(conda_env MODIFY_PREFIX_PATH)
 
 add_library(rapids_logger src/logger.cpp)
 add_library(rapids_logger::rapids_logger ALIAS rapids_logger)

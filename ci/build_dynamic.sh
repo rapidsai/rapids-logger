@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-FileCopyrightText: Copyright (c) 2025, NVIDIA CORPORATION.
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 set -euo pipefail
@@ -21,10 +21,13 @@ set +u
 conda activate test
 set -u
 
+rapids-logger "packages in environment:"
+conda env export
+
 pushd tests/test_dynamic_libs
 
 cmake -S . -B build/ -DRAPIDS_LOGGER_HIDE_ALL_SPDLOG_SYMBOLS=OFF
-cmake --build build/
+cmake --build build/ --verbose
 
 # Check that ldd on build/LoggerTest includes spdlog and fmt and that neither
 # library was cloned into build/_deps
