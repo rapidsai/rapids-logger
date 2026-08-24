@@ -17,13 +17,21 @@ on:
       build_type:
         type: string
         default: nightly
+      candidate_train_sha256:
+        description: "Canonical release-train digest for a release-candidate build."
+        type: string
+        default: ""
+      candidate_release_tag:
+        description: "Final source tag created locally for a release-candidate build."
+        type: string
+        default: "v26.10.00"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}-${{ inputs.build_type || 'branch' }}
   cancel-in-progress: true
 permissions: {}
 jobs:
   conda-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@main
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@codex/release-build-output-manifests
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -31,6 +39,8 @@ jobs:
       sha: ${{ inputs.sha }}
       matrix_filter: group_by(.ARCH) | map(max_by([(.PY_VER|split(".")|map(tonumber)), (.CUDA_VER|split(".")|map(tonumber))]))
       script: ci/build_conda.sh
+      candidate-train-sha256: ${{ inputs.candidate_train_sha256 }}
+      release-candidate-tag: ${{ inputs.candidate_release_tag }}
     permissions:
       actions: read
       contents: read
@@ -56,7 +66,7 @@ jobs:
       packages: read
       pull-requests: read
   wheel-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@main
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@codex/release-build-output-manifests
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -67,6 +77,8 @@ jobs:
       package-name: rapids_logger
       package-type: cpp
       append-cuda-suffix: false
+      candidate-train-sha256: ${{ inputs.candidate_train_sha256 }}
+      release-candidate-tag: ${{ inputs.candidate_release_tag }}
     permissions:
       actions: read
       contents: read
