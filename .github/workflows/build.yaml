@@ -113,6 +113,8 @@ jobs:
       branch: ${{ inputs.branch }}
       sha: ${{ inputs.sha }}
       date: ${{ inputs.date }}
+      candidate-train-sha256: ${{ inputs.candidate_train_sha256 }}
+      release-candidate-tag: ${{ inputs.candidate_release_tag }}
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_static.sh"
     permissions:
@@ -129,6 +131,8 @@ jobs:
       branch: ${{ inputs.branch }}
       sha: ${{ inputs.sha }}
       date: ${{ inputs.date }}
+      candidate-train-sha256: ${{ inputs.candidate_train_sha256 }}
+      release-candidate-tag: ${{ inputs.candidate_release_tag }}
       container_image: "rapidsai/ci-conda:latest"
       script: "ci/build_dynamic.sh"
     permissions:
