@@ -39,6 +39,21 @@ jobs:
       pull-requests: read
   upload-conda:
     needs: conda-cpp-build
+    if: >-
+      ${{ inputs.build_type != 'release-candidate'
+      && github.event.inputs.build_type != 'release-candidate'
+      && !startsWith(github.ref, 'refs/heads/release-test-')
+      && !startsWith(github.ref_name, 'release-test-')
+      && !startsWith(github.head_ref, 'release-test-')
+      && !startsWith(github.head_ref, 'refs/heads/release-test-')
+      && !startsWith(inputs.branch, 'release-test-')
+      && !startsWith(inputs.branch, 'refs/heads/release-test-')
+      && github.ref != 'agent/release-catalog-canary'
+      && github.ref != 'refs/heads/agent/release-catalog-canary'
+      && github.head_ref != 'agent/release-catalog-canary'
+      && github.head_ref != 'refs/heads/agent/release-catalog-canary'
+      && inputs.branch != 'agent/release-catalog-canary'
+      && inputs.branch != 'refs/heads/agent/release-catalog-canary' }}
     uses: rapidsai/shared-workflows/.github/workflows/conda-upload-packages.yaml@db1cddb6cdf80d1836de64085bb653bea4571867
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
@@ -72,6 +87,21 @@ jobs:
       pull-requests: read
   wheel-publish-cpp:
     needs: wheel-cpp-build
+    if: >-
+      ${{ inputs.build_type != 'release-candidate'
+      && github.event.inputs.build_type != 'release-candidate'
+      && !startsWith(github.ref, 'refs/heads/release-test-')
+      && !startsWith(github.ref_name, 'release-test-')
+      && !startsWith(github.head_ref, 'release-test-')
+      && !startsWith(github.head_ref, 'refs/heads/release-test-')
+      && !startsWith(inputs.branch, 'release-test-')
+      && !startsWith(inputs.branch, 'refs/heads/release-test-')
+      && github.ref != 'agent/release-catalog-canary'
+      && github.ref != 'refs/heads/agent/release-catalog-canary'
+      && github.head_ref != 'agent/release-catalog-canary'
+      && github.head_ref != 'refs/heads/agent/release-catalog-canary'
+      && inputs.branch != 'agent/release-catalog-canary'
+      && inputs.branch != 'refs/heads/agent/release-catalog-canary' }}
     uses: rapidsai/shared-workflows/.github/workflows/wheels-publish.yaml@db1cddb6cdf80d1836de64085bb653bea4571867
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
