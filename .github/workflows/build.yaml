@@ -23,7 +23,7 @@ concurrency:
 permissions: {}
 jobs:
   conda-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@89cbc540c418700775a3130ac61c586f6891c5f3
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@e1b0fee622004174b0b5d5ae1ab872a3b9fa9d74
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -68,7 +68,7 @@ jobs:
       packages: read
       pull-requests: read
   wheel-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@89cbc540c418700775a3130ac61c586f6891c5f3
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@e1b0fee622004174b0b5d5ae1ab872a3b9fa9d74
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -118,7 +118,7 @@ jobs:
       packages: read
       pull-requests: read
   static-build:
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@89cbc540c418700775a3130ac61c586f6891c5f3
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@e1b0fee622004174b0b5d5ae1ab872a3b9fa9d74
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -133,7 +133,7 @@ jobs:
       packages: read
       pull-requests: read
   dynamic-build:
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@89cbc540c418700775a3130ac61c586f6891c5f3
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@e1b0fee622004174b0b5d5ae1ab872a3b9fa9d74
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
