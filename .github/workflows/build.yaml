@@ -23,7 +23,7 @@ concurrency:
 permissions: {}
 jobs:
   conda-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/conda-cpp-build.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -54,7 +54,7 @@ jobs:
       && github.head_ref != 'refs/heads/agent/release-catalog-canary'
       && inputs.branch != 'agent/release-catalog-canary'
       && inputs.branch != 'refs/heads/agent/release-catalog-canary' }}
-    uses: rapidsai/shared-workflows/.github/workflows/conda-upload-packages.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/conda-upload-packages.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -68,7 +68,7 @@ jobs:
       packages: read
       pull-requests: read
   wheel-cpp-build:
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-build.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -102,7 +102,7 @@ jobs:
       && github.head_ref != 'refs/heads/agent/release-catalog-canary'
       && inputs.branch != 'agent/release-catalog-canary'
       && inputs.branch != 'refs/heads/agent/release-catalog-canary' }}
-    uses: rapidsai/shared-workflows/.github/workflows/wheels-publish.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/wheels-publish.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -118,7 +118,7 @@ jobs:
       packages: read
       pull-requests: read
   static-build:
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
@@ -133,7 +133,7 @@ jobs:
       packages: read
       pull-requests: read
   dynamic-build:
-    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@bc90841573889b6ff09657d3b1981e1b04af5645
+    uses: rapidsai/shared-workflows/.github/workflows/custom-job.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced
     with:
       build_type: ${{ inputs.build_type || 'branch' }}
       branch: ${{ inputs.branch }}
