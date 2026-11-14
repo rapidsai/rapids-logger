@@ -9,7 +9,7 @@ source:
   path: ../../..
 
 build:
-  number: ${{ GIT_DESCRIBE_NUMBER }}
+  number: ${{ git.latest_tag_distance("../../..") }}
   dynamic_linking:
     overlinking_behavior: "error"
   script: |
