@@ -199,7 +199,10 @@ class RAPIDS_LOGGER_EXPORT logger {
     auto formatted_size =
       std::snprintf(nullptr, 0, format.c_str(), convert_to_c_string(std::forward<Args>(args))...);
     if (formatted_size < 0) { throw std::runtime_error("Error during formatting."); }
-    if (formatted_size == 0) { log(lvl, {}); }
+    if (formatted_size == 0) {
+      log(lvl, {});
+      return;
+    }
     auto size = static_cast<std::size_t>(formatted_size) + 1;  // for null terminator
     // NOLINTNEXTLINE(modernize-avoid-c-arrays, cppcoreguidelines-avoid-c-arrays)
     std::unique_ptr<char[]> buf(new char[size]);

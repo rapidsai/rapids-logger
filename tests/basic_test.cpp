@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2025, NVIDIA CORPORATION.
+ * SPDX-FileCopyrightText: Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -164,4 +164,22 @@ TEST_F(LoggerTest, LogLevelSetter)
     logger_.critical("critical");
     EXPECT_EQ(this->sink_content(), "");
   }
+}
+
+TEST_F(LoggerTest, EmptyFormattedMessageIsLoggedOnce)
+{
+  logger_.info("%s", "");
+  EXPECT_EQ(this->sink_content(), "\n");
+}
+
+TEST_F(LoggerTest, MoveConstructedLoggerOwnsItsSinks)
+{
+  rapids_logger::logger moved{std::move(logger_)};
+  std::ostringstream oss2;
+  moved.sinks().push_back(std::make_shared<rapids_logger::ostream_sink_mt>(oss2));
+  moved.set_pattern("%v");
+
+  moved.info("info");
+  EXPECT_EQ(this->sink_content(), "info\n");
+  EXPECT_EQ(oss2.str(), "info\n");
 }
