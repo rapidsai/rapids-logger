@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2024, NVIDIA CORPORATION.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -246,8 +246,16 @@ logger::logger(std::string name, std::vector<sink_ptr> sinks)
   }
 }
 
-logger::~logger()              = default;
-logger::logger(logger&& other) = default;
+logger::~logger() = default;
+logger::logger(logger&& other) : impl{std::move(other.impl)}, sinks_{*this}
+{
+  // sinks_ refers to its owning logger, so it cannot simply be moved. Rebuild
+  // it against this logger, the same way the move assignment operator does.
+  sinks_.clear();
+  for (auto const& s : other.sinks_) {
+    sinks_.push_back(s);
+  }
+}
 logger& logger::operator=(logger&& other)
 {
   impl = std::move(other.impl);
